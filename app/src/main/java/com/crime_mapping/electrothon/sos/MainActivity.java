@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ChildEventListener childEventListener;
     private String mEmail;
     private String mUid;
+    public String a1,a2;
 
     //Notification
     NotificationManager nm;
@@ -463,6 +464,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
     private void updateUI(Location loc) {
         Log.d(TAG, "updateUI");
+        a1 = Double.toString(loc.getLatitude());
+        a2 = Double.toString(loc.getLongitude());
         tv.setText(Double.toString(loc.getLatitude()) + '\n' + Double.toString(loc.getLongitude()) + '\n' + DateFormat.getTimeInstance().format(loc.getTime()));
     }
     private boolean isLocationEnabled() {
@@ -507,7 +510,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void Update_loc(View view) {
         //write code for police sections
+        Toast.makeText(this,a1+" "+a2,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this,update_spot.class);
+        Bundle extras = new Bundle();
+        extras.putString("latti", a1);
+        extras.putString("longgi", a2);
+        intent.putExtras(extras);
         startActivity(intent);
+
+    }
+
+    public void unsafe_nearby(View view) {
+        Intent intent = new Intent(this,MapsActivity2.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("lat",a1);
+        bundle.putString("lon",a2);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
     }
 }

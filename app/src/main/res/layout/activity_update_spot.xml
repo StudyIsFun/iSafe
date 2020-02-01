@@ -38,9 +38,17 @@
             android:ems="10"
             android:inputType="textPersonName"
             />
-
+        <EditText
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Enter the ancident details"
+            android:id="@+id/detail">
+        </EditText>
         <Button
             android:id="@+id/submit"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
