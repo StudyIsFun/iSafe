@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffff8a80"
+    tools:context="com.crime_mapping.electrothon.sos.update_spot">
+
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints">
+
+        <EditText
+            android:layout_marginTop="150dp"
+            android:id="@+id/id"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="userID"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:layout_marginTop="20dp"
+            android:id="@+id/pswd"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:hint="password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffff8a80"
+            android:onClick="submit"
+            android:text="Enter">
+
+        </Button>    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
