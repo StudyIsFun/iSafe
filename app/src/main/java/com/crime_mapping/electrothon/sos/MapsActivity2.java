@@ -68,7 +68,7 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
                     mMap.addMarker(new MarkerOptions().position(points).title(t));
                     Circle circle = mMap.addCircle(new CircleOptions()
                             .center(points)
-                            .radius(20)
+                            .radius(35)
                             .strokeColor(Color.BLUE)
                             .strokeWidth(2f)
                             .fillColor(Color.argb(50,255,0,0)));

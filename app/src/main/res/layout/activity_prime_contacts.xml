@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:textColor="#E6E2E2"
+    android:background="#00041B"
+    android:layout_height="match_parent"
+    tools:context="com.crime_mapping.electrothon.sos.prime_contacts">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:textColor="#E6E2E2"
+        android:background="#00041B"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints">
+
+        <EditText
+            android:layout_marginTop="100dp"
+            android:id="@+id/self_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textColor="#E6E2E2"
+            android:background="#00041B"
+            android:inputType="textPersonName"
+            android:hint="Enter Your No" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:onClick="save"
+            android:textColor="#E6E2E2"
+            android:backgroundTint="#00041B"
+            android:layout_height="wrap_content"
+            android:text="Submit" />
+
+        <EditText
+            android:paddingTop="100dp"
+            android:id="@+id/mob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textColor="#E6E2E2"
+            android:background="#00041B"
+            android:inputType="textPersonName"
+            android:hint="Contact No"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:onClick="submit_prime"
+            android:textColor="#E6E2E2"
+            android:backgroundTint="#00041B"
+            android:layout_height="wrap_content"
+            android:text="Submit" />
+
+
+        <Button
+            android:id="@+id/live"
+            android:layout_width="match_parent"
+            android:onClick="live_location"
+            android:textColor="#E6E2E2"
+            android:backgroundTint="#00041B"
+            android:layout_height="wrap_content"
+            android:text="Access Live Location" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

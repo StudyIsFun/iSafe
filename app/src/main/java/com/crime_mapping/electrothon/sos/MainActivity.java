@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -35,6 +36,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,11 +55,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.util.Date;
 
+import static java.lang.StrictMath.abs;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String ANONYMOUS = "anonymous";
     GoogleApiClient gac;
+    String prime="";
     LocationRequest locationRequest;
     private static final int UPDATE_INTERVAL = 15 * 1000;
     private static final int FASTEST_UPDATE_INTERVAL = 2 * 1000;
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String mEmail;
     private String mUid;
     public String a1,a2;
-
+    Double l1,l2,ll1,ll2;
     //Notification
     NotificationManager nm;
     String CHANNEL_ID = "my_sos_channel";// The id of the channel.
@@ -110,10 +118,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStop() {
         gac.disconnect();
-        if (childEventListener != null) {
-            myRef.removeEventListener(childEventListener);
-            Log.d(TAG, "onStop: ChildEventListener Removed");
-        }
+//        if (childEventListener != null) {
+//            myRef.removeEventListener(childEventListener);
+//            Log.d(TAG, "onStop: ChildEventListener Removed");
+//        }
 
         if(isServiceBackground&&FirebaseAuth.getInstance().getCurrentUser()!=null)
         {
@@ -135,6 +143,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         tv=findViewById(R.id.textView);
         b=findViewById(R.id.button);
+
+        DatabaseReference mRootRef= FirebaseDatabase.getInstance().getReference();
+//        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        DatabaseReference locationRef=mRootRef.child("location").child(uId);
+//        locationRef.child("lat").setValue("31.7166");
+//        locationRef.child("lon").setValue("76.5333");
+//        locationRef.setValue(new LatLng(Float.valueOf("31.7166"), Float.valueOf("76.5333")));
+
 
         nm=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         CharSequence name = "SOS ALERT";
@@ -265,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
 
-                String locKey = dataSnapshot.getKey();
+//                String locKey = dataSnapshot.getKey();
 
 
             }
@@ -465,6 +481,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void updateUI(Location loc) {
         Log.d(TAG, "updateUI");
         a1 = Double.toString(loc.getLatitude());
+        l1 = loc.getLatitude();
+        l2 = loc.getLongitude();
         a2 = Double.toString(loc.getLongitude());
         tv.setText(Double.toString(loc.getLatitude()) + '\n' + Double.toString(loc.getLongitude()) + '\n' + DateFormat.getTimeInstance().format(loc.getTime()));
     }
@@ -477,6 +495,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     private void updateUserLocationToFirebase( Location location) {
+        DatabaseReference d1 = FirebaseDatabase.getInstance().getReference().child("spots");
+        d1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dsp : dataSnapshot.getChildren()){
+                    String a = dsp.child("lat").getValue().toString();
+
+                    String b = dsp.child("lon").getValue().toString();
+                    String t = dsp.child("details").getValue().toString();
+//                    LatLng points = new LatLng(Double.valueOf(a),Double.valueOf(b));
+//                    ll1 = Double.valueOf(a);
+//                    ll2 = Double.valueOf(b);
+//                    if(abs((ll1-l1))<=0.0002 && abs(ll2-l2)<0.0002)
+//                    {p
+                        Toast.makeText(MainActivity.this,t,Toast.LENGTH_SHORT).show();
+//                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         FirebaseLocationData fld= new FirebaseLocationData(mEmail,location.getLatitude() ,location.getLongitude(),DateFormat.getTimeInstance().format(location.getTime()),DateFormat.getTimeInstance().format(new Date()));
         fld.setUid(mUid);
         myUserRef.child(mUid).child("name").setValue(mUsername);
@@ -528,5 +571,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         intent.putExtras(bundle);
         startActivity(intent);
 
+    }
+
+    public void routes(View view) {
+        Intent intent = new Intent(this,MapsActivity3.class);
+        startActivity(intent);
+    }
+
+    public void share_loc(View view) {
+        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference().child("Locations").child(uId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                prime = dataSnapshot.child("prime").getValue().toString();
+                Toast.makeText(MainActivity.this,prime,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+//        Toast.makeText(this,"services started...",Toast.LENGTH_SHORT).show();
+        Intent i=new Intent(this,MyService.class);
+        startService(i);
+    }
+
+    public void enter_prime(View view) {
+        Intent intent = new Intent(this,prime_contacts.class);
+        startActivity(intent);
     }
 }
