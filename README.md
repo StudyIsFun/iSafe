@@ -1,5 +1,6 @@
 # Real time crime mapping using Google Api
 > People new to any place can get to know unsafe area near them and can take various precautions.
+
 [![forthebadge](https://forthebadge.com/images/badges/built-for-android.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)](https://forthebadge.com)
 
