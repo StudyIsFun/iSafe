@@ -15,7 +15,7 @@
 
 ## What you'll get
 - You can send SOS in emergency case <img src="/screenshot/ss1.jpg" alt="Yahan ek SOS ka picture aata hai, but tumhara net slow hai">
-- You can check unsafe area near you <img src="/screenshot/ss2.jpg" alt="Yahan ek marked map aata, but tumhara net slow hai">
+- You can check unsafe area near you(SS with dummy data) <img src="/screenshot/ss2.jpg" alt="Yahan ek marked map aata, but tumhara net slow hai">
 - You can see safe and unsafe path from source to destination <img src="/screenshot/ss3.jpg" alt="Yahan ek aur marked map aata, but tumhara net slow hai">
 
 ## Installation
