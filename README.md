@@ -14,9 +14,22 @@
 - Unknowingly if they are in unsafe area,they can take many precautions like SOS to nearby police station and prime contacts,They can share live location,live mic and cam with their prime contacts.
 
 ## What you'll get
-- You can send SOS in emergency case <img src="/screenshot/ss1.jpg" alt="Yahan ek SOS ka picture aata hai, but tumhara net slow hai">
-- You can check unsafe area near you(SS with dummy data) <img src="/screenshot/ss2.jpg" alt="Yahan ek marked map aata, but tumhara net slow hai">
-- You can see safe and unsafe path from source to destination <img src="/screenshot/ss3.jpg" alt="Yahan ek aur marked map aata, but tumhara net slow hai">
+- You can send SOS in emergency case 
+- You can check unsafe area near you (SS with dummy data) 
+- You can see safe and unsafe path from source to destination 
+## Screenshots
+<table>
+  <tr>
+    <td>SOS in emergency case</td>
+     <td>unsafe area near you</td>
+     <td>safe and unsafe path</td>
+  </tr>
+  <tr>
+    <td><img src="/screenshot/ss1.jpg" alt="Yahan ek SOS ka picture aata hai, but tumhara net slow hai" width=350 height=480></td>
+    <td><img src="/screenshot/ss2.jpg" alt="Yahan ek marked map aata, but tumhara net slow hai" width=350 height=480></td>
+    <td><img src="/screenshot/ss3.jpg" alt="Yahan ek aur marked map aata, but tumhara net slow hai" width=350 height=480></td>
+  </tr>
+ </table>
 
 ## Installation
 - Clone the repository using ```https://github.com/risi1006/Crime-Mapping```
