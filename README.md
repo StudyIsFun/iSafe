@@ -35,7 +35,7 @@
 ## Installation
 - Clone the repository using ```https://github.com/risi1006/Crime-Mapping```
 - Open the directory *Crime mapping*
-- Install the requirements with ```pip3 install -r requirements.txt```
+
 
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/no-ragrets.svg)](https://forthebadge.com)
