@@ -3,9 +3,11 @@ package com.crime_mapping.electrothon.sos;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -36,28 +38,27 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     Button getDirection;
-    LatLng xx,yy;
+    LatLng xx, yy;
     private Polyline currentPolyline;
     private MarkerOptions place1, place2;
     ArrayList<LatLng> listpoints;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps3);
 
         if (ContextCompat.checkSelfPermission(MapsActivity3.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity3.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)){
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(MapsActivity3.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            }else{
+            } else {
                 ActivityCompat.requestPermissions(MapsActivity3.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
-        }
-        else
-        {
+        } else {
 //            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 //                    .findFragmentById(R.id.map);
             listpoints = new ArrayList<LatLng>();
@@ -81,21 +82,22 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults){
-        switch (requestCode){
+                                           int[] grantResults) {
+        switch (requestCode) {
             case 1: {
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(MapsActivity3.this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -108,8 +110,18 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Toast.makeText(this,"map ready", LENGTH_LONG).show();
+        Toast.makeText(this, "map ready", LENGTH_LONG).show();
         // Add a marker in Sydney and move the camera
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override

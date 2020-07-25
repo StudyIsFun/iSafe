@@ -1,16 +1,17 @@
 package com.crime_mapping.electrothon.sos;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,10 +21,10 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity4 extends FragmentActivity implements OnMapReadyCallback {
     String self = "";
-    String who="";
-    Double lat,lon;
-    int flag=0;
-    String lat1,lon1;
+    String who = "";
+    Double lat, lon;
+    int flag = 0;
+    String lat1, lon1;
     private GoogleMap mMap;
 
     @Override
@@ -49,6 +50,16 @@ public class MapsActivity4 extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mMap.setMyLocationEnabled(true);
         String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference().child("Locations").child(uId).addValueEventListener(new ValueEventListener() {

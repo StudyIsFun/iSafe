@@ -1,6 +1,7 @@
 package com.crime_mapping.electrothon.sos;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,8 +14,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    Double latitude,longitude;
-    String name,time;
+    Double latitude, longitude;
+    String name, time;
+
+    String l1, l2;
 
 
     @Override
@@ -26,13 +29,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Bundle b=getIntent().getExtras();
-        if(b!=null) {
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
             latitude = b.getDouble("lat");
             longitude = b.getDouble("long");
             name = b.getString("name");
             time = b.getString("time");
         }
+
+        Intent intent = getIntent();
+        l1 = intent.getStringExtra("Latitude");
+        l2 = intent.getStringExtra("Longitude");
     }
 
 
@@ -49,10 +56,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        double lat, lon;
+        lat = Double.valueOf(l1);
+        lon = Double.valueOf(l2);
+        LatLng loc = new LatLng(lat, lon);
 
-        LatLng loc = new LatLng(latitude,longitude);
-        mMap.addMarker(new MarkerOptions().position(loc).title(name+" at "+time));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 10f), 4000, null);
+        mMap.addMarker(new MarkerOptions().position(loc).title(name + " at " + time));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16f), 4000, null);
 
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
 //        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
