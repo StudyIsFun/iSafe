@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     Notification n;
     Notification.Builder nb;
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     private static final String TAG = "MainActivity";
 
     @Override
@@ -139,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         tv=findViewById(R.id.textView);
         b=findViewById(R.id.button);
+
+
 
         DatabaseReference mRootRef= FirebaseDatabase.getInstance().getReference();
 //        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -600,16 +605,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void location_sharing(View view){
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+       final String no = preferences.getString("PHN","");
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("9521747405")){
-                    String lat = dataSnapshot.child("9521747405").child("Latitude").getValue().toString();
-                    String lon = dataSnapshot.child("9521747405").child("Longitude").getValue().toString();
+                if (dataSnapshot.hasChild(no)){
                     Intent intent = new Intent(MainActivity.this,MapsActivity.class);
-                    intent.putExtra("Latitude",lat);
-                    intent.putExtra("Longitude",lon);
                     startActivity(intent);
                 }
                 else {
