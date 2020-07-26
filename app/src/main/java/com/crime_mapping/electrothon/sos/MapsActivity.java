@@ -1,24 +1,42 @@
 package com.crime_mapping.electrothon.sos;
 
+import android.content.Context;
 import android.content.Intent;
-import androidx.fragment.app.FragmentActivity;
-import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "MapsActivity";
     private GoogleMap mMap;
+
     Double latitude, longitude;
     String name, time;
 
-    String l1, l2;
+    double l1, l2;
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +47,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            latitude = b.getDouble("lat");
-            longitude = b.getDouble("long");
-            name = b.getString("name");
-            time = b.getString("time");
-        }
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        final String no = preferences.getString("PHN", "");
+        Log.d("number", "" + preferences.getString("PHN", ""));
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(no)) {
+                    l1 = Double.valueOf(dataSnapshot.child(no).child("Latitude").getValue().toString());
+                    l2 = Double.valueOf(dataSnapshot.child(no).child("Latitude").getValue().toString());
+                    Log.d("latlon", "" + l1 + l2);
 
-        Intent intent = getIntent();
-        l1 = intent.getStringExtra("Latitude");
-        l2 = intent.getStringExtra("Longitude");
+                } else {
+                    Toast.makeText(MapsActivity.this, "No user have shared location with you.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
-
 
     /**
      * Manipulates the map once available.
@@ -56,15 +86,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        double lat, lon;
-        lat = Double.valueOf(l1);
-        lon = Double.valueOf(l2);
-        LatLng loc = new LatLng(lat, lon);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        mMap.addMarker(new MarkerOptions().position(loc).title(name + " at " + time));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16f), 4000, null);
+        // Add a marker in Sydney and move the camera
 
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-//        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        LatLng latLng = new LatLng(l1, l2);
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+        mMap.addMarker(markerOptions);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+        mMap.animateCamera(cameraUpdate);
+
     }
 }

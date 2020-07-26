@@ -1,7 +1,9 @@
 package com.crime_mapping.electrothon.sos;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -30,6 +32,9 @@ public class VerifyFragment extends Fragment {
     private String verificationId;
     private FirebaseAuth mAuth;
     private String phoneNumber;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     private PinEntryEditText pinEntryEditText;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBack = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -128,6 +133,10 @@ public class VerifyFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
+                            preferences = getContext().getSharedPreferences("App", Context.MODE_PRIVATE);
+                            editor = preferences.edit();
+                            editor.putString("PHN",phoneNumber);
+                            editor.commit();
                             Intent intent = new Intent(getActivity(),LoginActivity.class);
                             startActivity(intent);
                         }

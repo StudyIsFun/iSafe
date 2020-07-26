@@ -43,7 +43,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    String lat, lon;
+    double lat, lon;
 
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -176,8 +176,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public void onLocationChanged(Location location) {
-        lat = String.valueOf(location.getLatitude());
-        lon = String.valueOf(location.getLongitude());
+        lat = location.getLatitude();
+        lon = location.getLongitude();
         updateUI();
     }
 
@@ -208,13 +208,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            lat = String.valueOf(mLastLocation.getLatitude());
-            lon = String.valueOf(mLastLocation.getLongitude());
+            lat = mLastLocation.getLatitude();
+            lon = mLastLocation.getLongitude();
             Log.d("response", "" + lat + lon);
 
             if (preferences.getBoolean("AllowLocSharing", false)) {
                 databaseReference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(preferences.getString("PrimeContact", ""));
-                Map<String, Object> details = new HashMap<>();
+                Map<String,Double> details = new HashMap<>();
                 details.put("Latitude", lat);
                 details.put("Longitude", lon);
                 databaseReference.setValue(details);
