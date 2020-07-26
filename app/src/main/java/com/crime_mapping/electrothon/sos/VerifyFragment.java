@@ -137,7 +137,7 @@ public class VerifyFragment extends Fragment {
                             editor = preferences.edit();
                             editor.putString("PHN",phoneNumber);
                             editor.commit();
-                            Intent intent = new Intent(getActivity(),LoginActivity.class);
+                            Intent intent = new Intent(getActivity(),MainActivity.class);
                             startActivity(intent);
                         }
                     }

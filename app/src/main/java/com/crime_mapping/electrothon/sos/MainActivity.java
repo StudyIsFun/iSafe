@@ -187,38 +187,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if(mFirebaseuser==null)
         {
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this,Login.class));
             finish();
             return;
-        }
-        else {
-
-            mEmail=mFirebaseuser.getEmail();
-            if(!TextUtils.isEmpty(mFirebaseuser.getDisplayName()))
-                mUsername=mFirebaseuser.getDisplayName();
-            else {
-                mUsername = mEmail.split("@")[0];
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(mUsername).build();
-
-                mFirebaseuser.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "onComplete: name intialized as "+mUsername);
-                                }
-                            }
-                        });
-
-
-
-            }
-            mUid=mFirebaseuser.getUid();
-            if(mFirebaseuser.getPhotoUrl()!=null)
-                mPhotoUrl=mFirebaseuser.getPhotoUrl().toString();
-            Toast.makeText(this, "Welcome\n"+mUsername, Toast.LENGTH_SHORT).show();
-
         }
 
          childEventListener = new ChildEventListener() {
