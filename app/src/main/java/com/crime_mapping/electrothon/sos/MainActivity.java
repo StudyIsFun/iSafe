@@ -10,15 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,10 +35,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     TextView tv;
     Button b;
+
 
 
     //Firebase Variables
@@ -583,8 +579,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         FirebaseDatabase.getInstance().getReference().child("Locations").child(uId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                prime = dataSnapshot.child("prime").getValue().toString();
-                Toast.makeText(MainActivity.this,prime,Toast.LENGTH_SHORT).show();
+               // prime = dataSnapshot.child("prime").getValue().toString();
+                Toast.makeText(MainActivity.this,"service started",Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -601,5 +597,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void enter_prime(View view) {
         Intent intent = new Intent(this,prime_contacts.class);
         startActivity(intent);
+    }
+
+    public void location_sharing(View view){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("9521747405")){
+                    String lat = dataSnapshot.child("9521747405").child("Latitude").getValue().toString();
+                    String lon = dataSnapshot.child("9521747405").child("Longitude").getValue().toString();
+                    Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                    intent.putExtra("Latitude",lat);
+                    intent.putExtra("Longitude",lon);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "No user have shared location with you.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

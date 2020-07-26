@@ -1,6 +1,6 @@
 package com.crime_mapping.electrothon.sos;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class AboutActivity extends AppCompatActivity {

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    android:isScrollContainer="true"
     android:background="#010938"
+    android:isScrollContainer="true"
     tools:context=".MainActivity">
 
     <ScrollView
@@ -24,30 +24,30 @@
                 android:orientation="vertical">
 
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_top"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:paddingTop="50dp"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:elevation="10dp"
-                    android:id="@+id/constraint_top"
+                    android:paddingTop="50dp"
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <ImageButton
                         android:id="@+id/imageButton"
+                        style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="83dp"
                         android:layout_height="61dp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_margin="30dp"
-                        android:textColor="#E6E2E2"
                         android:backgroundTint="#00041B"
                         android:onClick="startSos"
-                        style="@style/Widget.AppCompat.Button.Colored"
-                        android:src="@drawable/ic_mr_button_connected_28_dark"
+
+                        android:textColor="#E6E2E2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,10 @@
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
                         android:backgroundTint="#00041B"
                         android:text="Press Button to Broadcast your location\n in case of emergency "
                         android:textAlignment="center"
+                        android:textColor="#E6E2E2"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/imageButton"
@@ -70,8 +70,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <RelativeLayout
@@ -79,97 +78,114 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center">
+
                     <Button
-                        android:layout_width="300dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
                         android:id="@+id/unsafe_nearby"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
+                        android:gravity="center"
                         android:onClick="unsafe_nearby"
-                        android:text="Unsafe Area around me">
+                        android:text="Unsafe Area around me"
+                        android:textColor="#E6E2E2">
 
                     </Button>
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:paddingTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:paddingTop="20dp">
+
                     <Button
-                        android:layout_width="300dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
-                        android:onClick="routes"
                         android:id="@+id/Unsafe_routes"
-                        android:text="Find the routes">
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
+                        android:gravity="center"
+                        android:onClick="routes"
+                        android:text="Find the routes"
+                        android:textColor="#E6E2E2">
 
                     </Button>
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:paddingTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:paddingTop="20dp">
+
                     <Button
-                        android:layout_width="300dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
-                        android:onClick="enter_prime"
-                        android:backgroundTint="#00041B"
                         android:id="@+id/PrimeContacts"
-                        android:text="Enter Details of prime contacts">
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
+                        android:gravity="center"
+                        android:onClick="enter_prime"
+                        android:text="Enter Details of prime contacts"
+                        android:textColor="#E6E2E2">
 
                     </Button>
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:paddingTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:paddingTop="20dp">
+
                     <Button
-                        android:layout_width="300dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
                         android:id="@+id/UpdateCrime"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
+                        android:gravity="center"
                         android:onClick="Update_loc"
-                        android:text="Mark position as crime spot">
+                        android:text="Mark position as crime spot"
+                        android:textColor="#E6E2E2">
 
                     </Button>
                 </RelativeLayout>
+
                 <RelativeLayout
-                    android:paddingTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:paddingTop="20dp">
+
                     <Button
-                        android:layout_width="300dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content"
-                        android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
                         android:id="@+id/share"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
+                        android:gravity="center"
                         android:onClick="share_loc"
-                        android:text="Share live location">
+                        android:text="Share live location"
+                        android:textColor="#E6E2E2">
 
                     </Button>
+
+                    <Button
+                        android:id="@+id/otherlocshared"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/share"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#00041B"
+                        android:onClick="location_sharing"
+                        android:gravity="center"
+                        android:text="Location shared with you"
+                        android:textColor="#E6E2E2" />
                 </RelativeLayout>
 
 
-
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -184,10 +200,10 @@
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
                         android:layout_margin="10dp"
-                        android:textColor="#E6E2E2"
                         android:backgroundTint="#00041B"
                         android:onClick="changeServiceState"
                         android:text="Stop background service"
+                        android:textColor="#E6E2E2"
                         app:layout_constraintBottom_toTopOf="@+id/textView5"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -200,10 +216,10 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
+                        android:backgroundTint="#00041B"
                         android:text="Fetching Your Location..."
                         android:textAlignment="center"
                         android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -216,18 +232,18 @@
                         android:id="@+id/textView5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="#00041B"
                         android:text="Your Current Location"
                         android:textAlignment="center"
-                        android:textSize="18sp"
                         android:textColor="#E6E2E2"
-                        android:backgroundTint="#00041B"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/button" />
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

@@ -45,7 +45,8 @@
             android:name=".MapsActivity2"
             android:label="@string/title_activity_maps2" />
         <activity android:name=".update_spot" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
