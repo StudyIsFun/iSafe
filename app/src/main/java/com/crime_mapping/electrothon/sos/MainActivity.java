@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -24,8 +25,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,12 +44,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.android.rtc.calling.Call;
 
 import java.text.DateFormat;
 import java.util.Date;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private String prime_id = null;
+    private String phone_no;
+    //    DataSnapshot dataSnapshot;
+//    DatabaseReference firebaseDatabase;
+    private String mMainTargetid;
+    private SharedPreferences preferences;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String ANONYMOUS = "anonymous";
     GoogleApiClient gac;
@@ -57,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final int notification_request_code = 100;
     FusedLocationProviderClient mFusedLocationProviderClient;
     Location lastLocation,lastLocationGpsProvider;
-
+    private DatabaseReference mRootReference;
 
     private static final String BACKGROUND_SERVICE_STATUS = "bgServiceStatus";
     SharedPreferences sharedpreferences;
@@ -89,10 +101,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     String CHANNEL_ID = "my_sos_channel";// The id of the channel.
     Notification n;
     Notification.Builder nb;
-
-    SharedPreferences preferences;
+    private int RECORD_AUDIO = 1;
+    private int CALL_PHONE = 1;
+    SharedPreferences preferencess;
     SharedPreferences.Editor editor;
-
+    private Button mMainCallbtn;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -135,8 +148,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         tv=findViewById(R.id.textView);
         b=findViewById(R.id.button);
+        startService(new Intent(this, SinchService.class));
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+//            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
 
+        }else{
+
+            requestRecordAudioPermission();
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+//            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
+        }else{
+            requestCallPhonePermission();
+        }
 
         DatabaseReference mRootRef= FirebaseDatabase.getInstance().getReference();
 //        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -599,6 +626,129 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void share_mic(View view) {
-        startActivity(new Intent(MainActivity.this, Sinch_MainActivity.class));
+
+
+
+        preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
+        String number = preferencess.getString("PHN","");
+        mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
+        DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
+
+
+        mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                prime_id = snapshot.getValue().toString();
+
+                //if prime_id is received,searching in contact table
+                DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
+                //            mContactReference = mRootReference.child("Contact").child(prime_id);
+                try {
+                    mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            mMainTargetid = dataSnapshot.getValue().toString();
+//                                Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
+                                Log.d("id_found", String.valueOf(mMainTargetid));
+                            try {
+                                Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
+
+                                Intent callscreen = new Intent(MainActivity.this, IncommingCallActivity.class);
+                                callscreen.putExtra("callid", currentcall.getCallId());
+                                callscreen.putExtra("incomming", false);
+                                callscreen.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(callscreen);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+//        startActivity(new Intent(MainActivity.this, Sinch_MainActivity.class));
+    }
+    public void requestRecordAudioPermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECORD_AUDIO)){
+            new AlertDialog.Builder(this)
+                    .setTitle("permission needed")
+                    .setMessage("This permission is needed to record audio for phone call")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+        }
+    }
+
+    public  void requestCallPhonePermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CALL_PHONE)){
+            new AlertDialog.Builder(this)
+                    .setTitle("permission needed")
+                    .setMessage("This permission is needed to make a phone call")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        }else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+        }
+    }
+
+    // Run time permission stuff ended
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == RECORD_AUDIO){
+            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "RECORD AUDIO Permission GRANTED", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "RECORD AUDIO Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }else if(requestCode==CALL_PHONE){
+            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "CALL PHONE Permission GRANTED", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "CALL PHONE Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

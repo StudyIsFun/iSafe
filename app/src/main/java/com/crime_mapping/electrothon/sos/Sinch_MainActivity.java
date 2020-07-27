@@ -1,16 +1,21 @@
 package com.crime_mapping.electrothon.sos;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +23,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,14 +47,13 @@ public class Sinch_MainActivity extends AppCompatActivity implements View.OnClic
 
     private int RECORD_AUDIO = 1;
     private int CALL_PHONE = 1;
-
+    private String prime_id = null;
     private  String phone_no;
 //    DataSnapshot dataSnapshot;
 //    DatabaseReference firebaseDatabase;
-
-//    FirebaseApp.initializeApp(this);
+    SharedPreferences preferences;
     DatabaseReference mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-//    DatabaseReference mContactReference = mRootReference.child("Contact/");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,24 +69,99 @@ public class Sinch_MainActivity extends AppCompatActivity implements View.OnClic
             mMainStatus.setText("Client Connected, ready to use!");
         }
 
+        //finding contact no of prime contact and searching id in contact table
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        final String no = preferences.getString("PHN","");
+        DatabaseReference mContactReference = mRootReference.child("user").child(no).child("prime");
+
+
+        mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                prime_id = snapshot.getValue().toString();
+
+                //if prime_id is received,searching in contact table
+                DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
+            //            mContactReference = mRootReference.child("Contact").child(prime_id);
+                    try {
+                        mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                mMainTargetid = dataSnapshot.getValue().toString();
+//                                Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
+//                                Log.d("id_found", String.valueOf(mMainTargetid));
+                                try {
+                                    Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
+
+                                    Intent callscreen = new Intent(Sinch_MainActivity.this, IncommingCallActivity.class);
+                                    callscreen.putExtra("callid", currentcall.getCallId());
+                                    callscreen.putExtra("incomming", false);
+                                    callscreen.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(callscreen);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 //        try {
-//            mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            mContactReference.addValueEventListener(new ValueEventListener() {
 //                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    mMainTargetid = dataSnapshot.child("phone_no").getValue().toString();
-//                    System.out.println(mMainTargetid);
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    prime_id = (String) snapshot.child("prime").getValue();
+//                    Toast.makeText(Sinch_MainActivity.this,"first "+prime_id,Toast.LENGTH_LONG).show();
 //                }
 //
 //                @Override
-//                public void onCancelled(DatabaseError databaseError) {
+//                public void onCancelled(@NonNull DatabaseError error) {
 //
 //                }
-//
 //            });
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+
+        //if prime_id is received,searching in contact table
+//        DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
+////            mContactReference = mRootReference.child("Contact").child(prime_id);
+//            try {
+//                mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        mMainTargetid = dataSnapshot.getValue().toString();
+//                        Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
+//                        Log.d("id_found", String.valueOf(mMainTargetid));
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//
+//                });
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
 //        ref.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -207,8 +287,7 @@ public class Sinch_MainActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        Intent newintent = new Intent(this,MyCamera.class);
-        startActivity(newintent);
+
         switch (v.getId()) {
             default:
                 break;

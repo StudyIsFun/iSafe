@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="#010938"
     android:isScrollContainer="true"
@@ -75,211 +75,328 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <RelativeLayout
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:background="@drawable/ic_icons8_poison_64"
+                            android:id="@+id/unsafe_nearby"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="unsafe_nearby"
+                            android:textColor="#E6E2E2">
+                        </Button>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Unsafe Area \naround me"
+                            ></TextView>
+                    </LinearLayout>
 
-                    <Button
-                        android:id="@+id/unsafe_nearby"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="unsafe_nearby"
-                        android:text="Unsafe Area around me"
-                        android:textColor="#E6E2E2">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/Unsafe_routes"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/ic_icons8_treasure_map_64"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="routes"
 
-                    </Button>
-                </RelativeLayout>
+                            android:textColor="#E6E2E2">
 
-                <RelativeLayout
+                        </Button>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Find the\n routes"
+                            ></TextView>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingTop="20dp">
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:background="@drawable/ic_icons8_contact_details_100"
+                            android:id="@+id/PrimeContacts"
 
-                    <Button
-                        android:id="@+id/Unsafe_routes"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="routes"
-                        android:text="Find the routes"
-                        android:textColor="#E6E2E2">
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="enter_prime"
+                            android:textColor="#E6E2E2">
+                        </Button>
 
-                    </Button>
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Enter Details of prime contacts"
+                            ></TextView>
+                    </LinearLayout>
 
-                <RelativeLayout
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/UpdateCrime"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/ic_icons8_server_64"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="Update_loc"
+
+                            android:textColor="#E6E2E2">
+
+                        </Button>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Mark position as crime spot"
+                            ></TextView>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingTop="20dp">
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:background="@drawable/ic_icons8_poison_64"
+                            android:id="@+id/share"
 
-                    <Button
-                        android:id="@+id/PrimeContacts"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="enter_prime"
-                        android:text="Enter Details of prime contacts"
-                        android:textColor="#E6E2E2">
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="share_loc"
+                            android:textColor="#E6E2E2">
+                        </Button>
 
-                    </Button>
-                </RelativeLayout>
 
-                <RelativeLayout
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Share live location"
+                            ></TextView>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/otherlocshared"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/ic_icons8_treasure_map_64"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="location_sharing"
+
+                            android:textColor="#E6E2E2">
+
+                        </Button>
+
+
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Location shared with you"
+                            ></TextView>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingTop="20dp">
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:background="@drawable/ic_icons8_poison_64"
+                            android:id="@+id/camShare"
 
-                    <Button
-                        android:id="@+id/UpdateCrime"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="Update_loc"
-                        android:text="Mark position as crime spot"
-                        android:textColor="#E6E2E2">
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="share_cam"
+                            android:textColor="#E6E2E2">
+                        </Button>
 
-                    </Button>
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="Share camera"
+                            ></TextView>
+                    </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingTop="20dp">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="190dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/MicShare"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/ic_icons8_treasure_map_64"
+                            android:backgroundTint="#00041B"
+                            android:gravity="center"
+                            android:onClick="share_mic"
 
-                    <Button
-                        android:id="@+id/share"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="share_loc"
-                        android:text="Share live location"
-                        android:textColor="#E6E2E2">
+                            android:textColor="#E6E2E2">
 
-                    </Button>
+                        </Button>
 
-                    <Button
-                        android:id="@+id/otherlocshared"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/share"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="#00041B"
-                        android:onClick="location_sharing"
-                        android:gravity="center"
-                        android:text="Location shared with you"
-                        android:textColor="#E6E2E2" />
-                </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:paddingTop="20dp">
 
-                    <Button
-                        android:id="@+id/camShare"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:gravity="center"
-                        android:onClick="share_cam"
-                        android:text="Share camera"
-                        android:textColor="#E6E2E2">
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:textColor="#E6E2E2"
+                            android:gravity="center"
+                            android:text="SHare mic"
+                            ></TextView>
+                    </LinearLayout>
 
-                    </Button>
+                </LinearLayout>
 
-                    <Button
-                        android:id="@+id/MicShare"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/camShare"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="#00041B"
-                        android:onClick="share_mic"
-                        android:gravity="center"
-                        android:text="SHare mic"
-                        android:textColor="#E6E2E2" />
-                </RelativeLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="70dp"
-                    android:elevation="20dp">
 
-                    <Button
-                        android:id="@+id/button"
-                        style="@style/Widget.AppCompat.Button.Colored"
+
+
+
+
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="10dp"
-                        android:backgroundTint="#00041B"
-                        android:onClick="changeServiceState"
-                        android:text="Stop background service"
-                        android:textColor="#E6E2E2"
-                        app:layout_constraintBottom_toTopOf="@+id/textView5"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_gravity="center"
+                        android:layout_marginTop="70dp"
+                        android:elevation="20dp">
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:backgroundTint="#00041B"
-                        android:text="Fetching Your Location..."
-                        android:textAlignment="center"
-                        android:textColor="#E6E2E2"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/textView5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView5"
-                        app:layout_constraintVertical_bias="1.0"
-                        android:gravity="center_horizontal" />
+                        <Button
+                            android:id="@+id/button"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp"
+                            android:backgroundTint="#00041B"
+                            android:onClick="changeServiceState"
+                            android:text="Stop background service"
+                            android:textColor="#E6E2E2"
+                            app:layout_constraintBottom_toTopOf="@+id/textView5"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#00041B"
-                        android:text="Your Current Location"
-                        android:textAlignment="center"
-                        android:textColor="#E6E2E2"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/button"
-                        android:gravity="center_horizontal" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:backgroundTint="#00041B"
+                            android:text="Fetching Your Location..."
+                            android:textAlignment="center"
+                            android:textColor="#E6E2E2"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/textView5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView5"
+                            app:layout_constraintVertical_bias="1.0"
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#00041B"
+                            android:text="Your Current Location"
+                            android:textAlignment="center"
+                            android:textColor="#E6E2E2"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@+id/textView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/button"
+                            android:gravity="center_horizontal" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

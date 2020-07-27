@@ -1,6 +1,8 @@
 package com.crime_mapping.electrothon.sos;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 
 import com.google.firebase.database.DatabaseReference;
@@ -13,16 +15,17 @@ public class Sinch_Apps extends Application {
     public static String USER_ID;
     public static SinchClient sinchClient;
     public static CallClient callClient;
-
+    SharedPreferences preferences;
     DatabaseReference firebaseDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         USER_ID=(""+(Build.FINGERPRINT+Build.MODEL).hashCode()).replace("-","");
-
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        final String no = preferences.getString("PHN","");
         firebaseDatabase = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-        firebaseDatabase.child("Contact").setValue(USER_ID);
+        firebaseDatabase.child("Contact").child(no).setValue(USER_ID);
 
 
 
