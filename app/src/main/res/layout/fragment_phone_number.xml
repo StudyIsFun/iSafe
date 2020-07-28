@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="@id/iv_dots"
         app:layout_constraintStart_toStartOf="@id/iv_dots"
         app:layout_constraintTop_toTopOf="@id/iv_dots"
-        android:src="@drawable/ic_channel_foreground" />
+         />
     <TextView
         android:id="@+id/tvHeader"
         style="@style/HeaderText"
