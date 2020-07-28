@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String mEmail;
     private String mUid;
     public String a1, a2;
-    Double l1, l2, ll1, ll2;
+    Double l1=0.00, l2=0.00, ll1, ll2;
     //Notification
     NotificationManager nm;
     String CHANNEL_ID = "my_sos_channel";// The id of the channel.
