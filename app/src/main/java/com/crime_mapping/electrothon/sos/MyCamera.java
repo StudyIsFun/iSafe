@@ -45,31 +45,33 @@ public class MyCamera extends Activity {
     String file_path;
     private CameraPreview mCameraPreview;
     private StorageReference mStorageRef;
+    private StorageReference riversRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (checkPermission()) {
-        setContentView(R.layout.camera_activity_main);
-        mCamera = getCameraInstance();
-        mCameraPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mCameraPreview);
+            setContentView(R.layout.camera_activity_main);
+            mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
+            mCamera = getCameraInstance();
+            mCameraPreview = new CameraPreview(this, mCamera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mCameraPreview);
 
-        Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Button captureButton = (Button) findViewById(R.id.button_capture);
+            captureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        mCamera.startPreview();
-                        mCamera.takePicture(null, null, mPicture);
-                    }
-                }, 0, 5000);
-            }
-        });
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            mCamera.startPreview();
+                            mCamera.takePicture(null, null, mPicture);
+                        }
+                    }, 0, 5000);
+                }
+            });
         } else {
             requestPermission();
         }
@@ -84,16 +86,16 @@ public class MyCamera extends Activity {
     private Camera getCameraInstance() {
         Camera camera = null;
         try {
-            camera = Camera.open();
+            camera = android.hardware.Camera.open();
         } catch (Exception e) {
             // cannot get camera or does not exist
         }
         return camera;
     }
 
-    Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+    android.hardware.Camera.PictureCallback mPicture = new android.hardware.Camera.PictureCallback() {
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+        public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
 
             File pictureFile = getOutputMediaFile();
             if (pictureFile == null) {
@@ -109,10 +111,10 @@ public class MyCamera extends Activity {
                 String[] arr = file_path.split("/");
                 int sz = arr.length;
                 Log.d("image_id",arr[sz-1]);
-                StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
-                StorageReference riversRef = mStorageRef.child("7355497420/"+arr[sz-1]);
+//
+                 riversRef = mStorageRef.child("7355497420/"+arr[sz-1]);
                 Uri file = Uri.fromFile(new File(String.valueOf(pictureFile)));
-
+//
                 riversRef.putFile(file)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -245,5 +247,6 @@ public class MyCamera extends Activity {
                 .show();
     }
 }
+
 
 

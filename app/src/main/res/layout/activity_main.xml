@@ -87,14 +87,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-
+                    android:layout_marginTop="20dp"
                     android:orientation="horizontal"
                     >
                     <LinearLayout
                         android:layout_width="110dp"
                         android:layout_height="110dp"
                         android:background="@drawable/button_background"
-                        android:layout_marginLeft="0dp"
+
                         android:gravity="center"
                         android:orientation="vertical">
                         <Button
@@ -295,7 +295,7 @@
 
                 </LinearLayout>
                 <View
-                    android:layout_marginTop="29dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
@@ -315,7 +315,7 @@
                         android:layout_height="50dp"
                         android:orientation="horizontal">
                         <ImageView
-                            android:src="@drawable/ic_baseline_linked_camera_24"
+
                             android:backgroundTint="#138CC3"
                             android:layout_width="50dp"
                             android:layout_height="50dp">
@@ -353,7 +353,7 @@
                         android:layout_height="50dp"
                         android:orientation="horizontal">
                         <ImageView
-                            android:src="@drawable/ic_baseline_mic_24"
+
                             android:backgroundTint="#138CC3"
                             android:layout_width="50dp"
                             android:layout_height="50dp">
@@ -388,6 +388,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_margin="15dp"
+                    android:layout_marginTop="40dp"
                     android:layout_height="350dp">
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -464,7 +465,20 @@
 <!--                </LinearLayout>-->
 
 
+<!--                <FrameLayout-->
+<!--                    android:id="@+id/camera_preview"-->
+<!--                    android:layout_width="1dp"-->
+<!--                    android:layout_height="1dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    />-->
 
+<!--                <Button-->
+<!--                    android:id="@+id/button_capture"-->
+<!--                    android:text="Capture"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    />-->
 
 
 
@@ -533,6 +547,8 @@
                             android:gravity="center_horizontal" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
+
 
         </RelativeLayout>
     </ScrollView>
