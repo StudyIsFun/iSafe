@@ -4,57 +4,117 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffff8a80"
+    android:background="#06125E"
     tools:context="com.crime_mapping.electrothon.sos.update_spot">
 
-
-    <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        tools:ignore="MissingConstraints">
-
-        <EditText
-            android:layout_marginTop="150dp"
-            android:id="@+id/id"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="userID"
-            android:inputType="textPersonName" />
+            android:orientation="vertical"
+            android:gravity="center"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp"
+            tools:ignore="MissingConstraints">
 
-        <EditText
-            android:layout_marginTop="20dp"
-            android:id="@+id/pswd"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:hint="password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            />
-        <EditText
-            android:paddingEnd="20dp"
-            android:paddingStart="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Enter the ancident details"
-            android:id="@+id/detail">
-        </EditText>
-        <Button
-            android:id="@+id/submit"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ffff8a80"
-            android:onClick="submit"
-            android:text="Enter">
+            <EditText
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/id"
+                android:paddingStart="20dp"
 
-        </Button>    </LinearLayout>
+                android:paddingEnd="20dp"
+
+                android:layout_width="match_parent"
+                android:background="@drawable/edit_text_background"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="userID"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/pswd"
+                android:paddingStart="20dp"
+
+                android:paddingEnd="20dp"
+                android:hint="password"
+                android:background="@drawable/edit_text_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                />
+            <EditText
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="10dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:hint="Enter the ancident details"
+                android:id="@+id/detail">
+            </EditText>
+            <Button
+                android:id="@+id/submit"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:paddingStart="20dp"
+                android:textColor="#FBFAFA"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/new_button_background"
+                android:onClick="submit"
+                android:text="Feed with your location">
+
+            </Button>
+            <View
+                android:layout_marginTop="29dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#F8F4F4" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_margin="15dp"
+                android:layout_height="350dp">
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context="com.crime_mapping.electrothon.sos.update_spot" />
+            </LinearLayout>
+            <Button
+                android:id="@+id/submit_custom"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="#FBFAFA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/new_button_background"
+                android:onClick="custom_submit"
+                android:text="Feed Selected location">
+
+            </Button>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

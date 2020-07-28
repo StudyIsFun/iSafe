@@ -1,8 +1,11 @@
 package com.crime_mapping.electrothon.sos;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,16 +17,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class update_spot extends Activity implements LocationListener {
+public class update_spot extends FragmentActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback{
     private EditText e1, e2,e3;
     private Button b1;
+    private GoogleMap mMap;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     protected Context context;
@@ -33,7 +50,7 @@ public class update_spot extends Activity implements LocationListener {
     DatabaseReference user_no;
     String provider;
     String latti,longgi;
-//    double latti=0,longi=0;
+    //    double latti=0,longi=0;
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
 
@@ -45,9 +62,15 @@ public class update_spot extends Activity implements LocationListener {
         e2 = (EditText) findViewById(R.id.pswd);
         b1 = (Button) findViewById(R.id.submit);
         e3 = (EditText)findViewById(R.id.detail);
+
         Intent intentt = getIntent();
         latti = intentt.getStringExtra("latti");
         longgi = intentt.getStringExtra("longgi");
+
+
+        SupportMapFragment mapfrag = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapfrag.getMapAsync(update_spot.this);
     }
 
 
@@ -102,18 +125,58 @@ public class update_spot extends Activity implements LocationListener {
 
     }
 
+
+
+    public void custom_submit(View view) {
+        Toast.makeText(this,"Latti : "+latti+" Longi : "+longgi,Toast.LENGTH_LONG).show();
+    }
+
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        // Add a marker in Sydney and move the camera
+
+        LatLng latLng = new LatLng(31.0543, 73.29423);
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+        mMap.addMarker(markerOptions);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+        mMap.animateCamera(cameraUpdate);
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+                latti = String.valueOf(point.latitude);
+                longgi = String.valueOf(point.longitude);
+                mMap.addMarker(new MarkerOptions().position(point).title("Custom location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
+        });
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
 
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onConnectionSuspended(int i) {
 
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 }
