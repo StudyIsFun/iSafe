@@ -328,14 +328,16 @@
                             android:layout_marginStart="10dp"
                             android:textColor="#fff"
                             android:layout_marginLeft="10dp" />
+
                         <ToggleButton
                             android:id="@+id/togglebutton"
+                            android:layout_marginStart="53dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="80dp"
-                            android:textOn="On"
-                            android:textOff="Off"
-                            android:onClick="onToggleClicked"/>
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:onClick="onToggleClicked"
+                            android:layout_marginLeft="80dp" />
 <!--                        <ToggleButton-->
 <!--                            android:layout_marginStart="80dp"-->
 <!--                            android:gravity="start|center_vertical"-->
@@ -373,7 +375,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
-                            android:onClick="toggleclick"/>
+                            android:onClick="toggleclick"
+                            android:layout_marginLeft="53dp" />
                     </LinearLayout>
                 </LinearLayout>
                 <View
@@ -465,20 +468,20 @@
 <!--                </LinearLayout>-->
 
 
-<!--                <FrameLayout-->
-<!--                    android:id="@+id/camera_preview"-->
-<!--                    android:layout_width="1dp"-->
-<!--                    android:layout_height="1dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    />-->
+                <FrameLayout
+                    android:id="@+id/camera_preview"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    />
 
-<!--                <Button-->
-<!--                    android:id="@+id/button_capture"-->
-<!--                    android:text="Capture"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    />-->
+                <Button
+                    android:id="@+id/button_capture"
+                    android:text="Capture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
 
 
 
