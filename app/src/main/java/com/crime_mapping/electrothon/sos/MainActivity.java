@@ -143,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         tv=findViewById(R.id.textView);
         b=findViewById(R.id.button);
 
-
-
         DatabaseReference mRootRef= FirebaseDatabase.getInstance().getReference();
 //        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //        DatabaseReference locationRef=mRootRef.child("location").child(uId);

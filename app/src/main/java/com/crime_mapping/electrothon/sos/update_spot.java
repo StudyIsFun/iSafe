@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,18 +22,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
+
 public class update_spot extends Activity implements LocationListener {
     private EditText e1, e2,e3;
     private Button b1;
+    private SihApi sihApi;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     protected Context context;
     TextView txtLat;
-    int no_user=0;
+    long no_user=0;
+    long no_user1=0;
+    long temp=0;
     String lat;
     DatabaseReference user_no;
     String provider;
+    String details; // type of crime
     String latti,longgi;
+
 //    double latti=0,longi=0;
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
@@ -45,9 +59,11 @@ public class update_spot extends Activity implements LocationListener {
         e2 = (EditText) findViewById(R.id.pswd);
         b1 = (Button) findViewById(R.id.submit);
         e3 = (EditText)findViewById(R.id.detail);
+        details = e3.getText().toString();
         Intent intentt = getIntent();
         latti = intentt.getStringExtra("latti");
         longgi = intentt.getStringExtra("longgi");
+
     }
 
 
@@ -58,41 +74,96 @@ public class update_spot extends Activity implements LocationListener {
         {
 
 
-            user_no = FirebaseDatabase.getInstance().getReference().child("spots");
-            user_no.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    if(dataSnapshot.exists()){
-                        for(DataSnapshot ds: dataSnapshot.getChildren())
-                        {
-                            no_user++;
-                        }
-                    }
-                    Toast.makeText(update_spot.this ,String.valueOf(no_user) ,Toast.LENGTH_SHORT).show();
+            try {
 
-                }
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://sihapi--psproject.repl.co/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                 sihApi = retrofit.create(SihApi.class);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-
-
-            });
-
-            if(latti!=null && longgi != null)
-            {
-//                String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference().child("spots").child(String.valueOf(no_user/3+1));
-                firebaseDatabase.child("lat").setValue(latti);
-                firebaseDatabase.child("lon").setValue(longgi);
-                firebaseDatabase.child("details").setValue(e3.getText().toString());
-                Toast.makeText(update_spot.this,latti+" "+longgi, Toast.LENGTH_LONG).show();
-
+                sendPost();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
             }
+
+
+
+//            user_no = FirebaseDatabase.getInstance().getReference().child("spots");
+//            user_no.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                    if(dataSnapshot.exists()){
+////                        for(DataSnapshot ds: dataSnapshot.getChildren())
+////                        {
+////                            no_user++;
+////                        }
+//                        no_user = dataSnapshot.getChildrenCount();
+//                        no_user1 = no_user;
+////                        System.out.println("no_user is " +no_user);
+//                    }
+//                    Toast.makeText(update_spot.this ,String.valueOf(no_user) ,Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//
+//
+//            });
+//
+//            if(latti!=null && longgi != null)
+//            {
+////
+//                DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference().child("spots").child(String.valueOf(no_user));
+//                firebaseDatabase.child("lat").setValue(latti);
+//                firebaseDatabase.child("lon").setValue(longgi);
+//                firebaseDatabase.child("details").setValue(e3.getText().toString());
+//
+//                Toast.makeText(update_spot.this,latti+" "+longgi, Toast.LENGTH_LONG).show();
+//
+//            }
         }
     }
+    public void sendPost() {
+//        latti = "31.0344";
+//        longgi = "73.999";
+        System.out.println("latti is "+latti);
+        System.out.println("longgi is "+longgi);
+//        Post post = new Post(latti, longgi, details);
+
+        Post post = new Post();
+        Post.setLat(latti);
+        Post.setLongg(longgi);
+        Post.setDetails(details);
+        
+        Call<Post> call = sihApi.sendPosts(post);
+
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if(response.isSuccessful()){
+                    Log.d(TAG, response.body().getDetails());
+                }
+                Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+            }
+
+//            @Override
+//            public void onFailure(Call<Post> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+//            }
+
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t){
+            Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+            }
+            });
+}
 
 
 
