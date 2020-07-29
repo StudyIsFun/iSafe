@@ -86,7 +86,7 @@ public class MyCamera extends Activity {
     private Camera getCameraInstance() {
         Camera camera = null;
         try {
-            camera = android.hardware.Camera.open();
+            camera = android.hardware.Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
         } catch (Exception e) {
             // cannot get camera or does not exist
         }
