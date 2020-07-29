@@ -55,7 +55,8 @@ public class prime_contacts extends AppCompatActivity {
         db1.child("prime").setValue(e1.getText().toString());
         DatabaseReference db1 = FirebaseDatabase.getInstance().getReference().child("who");
         db1.child(e1.getText().toString()).setValue(uId);
-
+        startActivity(new Intent(this,MainActivity.class));
+        finish();
     }
 
     public void save(View view) {

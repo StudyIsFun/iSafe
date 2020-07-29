@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
     //camera variable
+    private String no;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private Camera mCamera;
     //to store path of each image
@@ -226,6 +227,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startService(new Intent(this, SinchService.class));
         togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
         togglebutton1 = (ToggleButton)findViewById(R.id.togglebutton);
+
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        no = preferences.getString("PHN", "");
 
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
@@ -718,9 +723,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void location_sharing(View view) {
-        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
-        editor = preferences.edit();
-        final String no = preferences.getString("PHN", "");
+
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
         reference.addValueEventListener(new ValueEventListener() {
@@ -999,7 +1002,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         {
             Toast.makeText(this, "Mic sharing turned off...", Toast.LENGTH_SHORT).show();
             call.hangup();
-            recreate();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                recreate();
+            }
         }
     }
 
@@ -1036,7 +1041,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 int sz = arr.length;
                 Log.d("image_id",arr[sz-1]);
                 StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
-                StorageReference riversRef = mStorageRef.child("7355497420/"+arr[sz-1]);
+                StorageReference riversRef = mStorageRef.child(no+"/"+arr[sz-1]);
                 Uri file = Uri.fromFile(new File(String.valueOf(pictureFile)));
 
                 riversRef.putFile(file)
