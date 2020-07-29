@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:textColor="#E6E2E2"
+    android:background="#06125E"
+    android:layout_height="match_parent"
+    tools:context="com.crime_mapping.electrothon.sos.prime_contacts">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile Details"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="#FAF9F9"
+                android:textSize="26dp"
+                android:textStyle="bold"/>
+            <EditText
+
+                android:layout_marginTop="20dp"
+                android:id="@+id/self_name"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+
+                android:ems="10"
+                android:layout_height="35dp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPersonName"
+                android:hint="Enter Your Name" />
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:id="@+id/self_phone"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:ems="10"
+                android:layout_height="35dp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPersonName"
+                android:text="Your phone no" />
+
+            <EditText
+                android:layout_marginTop="20dp"
+                android:id="@+id/self_blood"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:ems="10"
+                android:layout_height="35dp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPersonName"
+                android:hint="Enter Your Blood group" />
+
+            <Button
+                android:id="@+id/submit_profile"
+                android:layout_width="match_parent"
+                android:onClick="submit_details"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#E6E2E2"
+                android:background="@drawable/new_button_background"
+                android:backgroundTint="#00041B"
+                android:layout_height="wrap_content"
+                android:text="Submit" />
+
+            <View
+                android:layout_marginTop="29dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#F8F4F4" />
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Prime Contact"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="#FAF9F9"
+                android:textSize="26dp"
+                android:textStyle="bold"/>
+
+            <!--        <LinearLayout-->
+            <!--            android:layout_width="409dp"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:textColor="#E6E2E2"-->
+            <!--            android:background="#06125E"-->
+            <!--            android:gravity="center"-->
+            <!--            android:orientation="vertical"-->
+            <!--            tools:layout_editor_absoluteX="1dp"-->
+            <!--            tools:layout_editor_absoluteY="1dp"-->
+            <!--            tools:ignore="MissingConstraints">-->
+
+            <EditText
+                android:layout_marginTop="20dp"
+                android:id="@+id/self_no"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:ems="10"
+                android:layout_height="35dp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPersonName"
+                android:hint="Enter Your No" />
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="match_parent"
+                android:onClick="save"
+                android:visibility="gone"
+                android:textColor="#E6E2E2"
+                android:backgroundTint="#00041B"
+                android:layout_height="wrap_content"
+                android:text="Submit" />
+
+            <EditText
+                android:layout_marginTop="16dp"
+                android:id="@+id/mob"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:ems="10"
+                android:layout_height="35dp"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPersonName"
+                android:hint="Contact No"/>
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:onClick="submit_prime"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:textColor="#E6E2E2"
+                android:background="@drawable/new_button_background"
+                android:backgroundTint="#00041B"
+                android:layout_height="wrap_content"
+                android:text="Submit" />
+
+
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/live"
+                android:layout_width="match_parent"
+                android:onClick="live_location"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#E6E2E2"
+                android:background="@drawable/new_button_background"
+                android:backgroundTint="#00041B"
+                android:layout_height="wrap_content"
+                android:text="Access Live Location" />
+
+            <!--        </LinearLayout>-->
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
