@@ -55,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(no)) {
                     l1 = Double.valueOf(dataSnapshot.child(no).child("Latitude").getValue().toString());
-                    l2 = Double.valueOf(dataSnapshot.child(no).child("Latitude").getValue().toString());
+                    l2 = Double.valueOf(dataSnapshot.child(no).child("Longitude").getValue().toString());
                     Log.d("latlon", "" + l1 + l2);
 
                 } else {
