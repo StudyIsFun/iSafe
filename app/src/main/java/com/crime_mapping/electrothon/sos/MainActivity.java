@@ -1,6 +1,8 @@
 package com.crime_mapping.electrothon.sos;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -11,8 +13,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Ringtone;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,8 +29,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,6 +43,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -62,6 +74,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallState;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -75,7 +92,7 @@ import java.util.TimerTask;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback,View.OnClickListener, SensorEventListener {
     private GoogleMap mMap;
     private String prime_id = null;
     private String phone_no;
@@ -142,6 +159,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private CameraPreview mCameraPreview;
     private StorageReference mStorageRef;
 
+
+    //mic variable
+    private String number;
+    private TextView mCallingStatus;
+    private TextView mCallingName;
+    private LinearLayout mCallingNotify;
+    private Button mCallingAnswer;
+    private Button mCallingReject;
+    private LinearLayout mCallingActionButton;
+    private Call call;
+    private Ringtone r;
+    private boolean isIncomming;
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private View mCallingBlacksreen;
+
+
+
     @Override
     protected void onStart() {
         gac.connect();
@@ -149,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             myRef.addChildEventListener(childEventListener);
             Log.d(TAG, "onStart: ChildEventListener Attached");
         }
-
+        EventBus.getDefault().register(this);
         stopService(new Intent(this, MyService.class));
         super.onStart();
     }
@@ -166,9 +201,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             startService(new Intent(this, MyService.class));
             Log.d(TAG, "onStop: starting service");
         }
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mProximity,SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +227,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
         togglebutton1 = (ToggleButton)findViewById(R.id.togglebutton);
 
+        //for mic section
+        preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
+        number = preferencess.getString("PHN","");
+        initView();
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -354,27 +407,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
             preview.addView(mCameraPreview);
 
-            Button captureButton = (Button) findViewById(R.id.button_capture);
-            captureButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            mCamera.startPreview();
-                            mCamera.takePicture(null, null, mPicture);
-                        }
-                    }, 0, 5000);
-                }
-            });
+//            Button captureButton = (Button) findViewById(R.id.button_capture);
+//            captureButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    Timer timer = new Timer();
+//                    timer.schedule(new TimerTask() {
+//                        @Override
+//                        public void run() {
+//                            mCamera.startPreview();
+//                            mCamera.takePicture(null, null, mPicture);
+//                        }
+//                    }, 0, 5000);
+//                }
+//            });
         } else {
             requestPermission();
         }
 
     }
 
+
+    //camera section begins here
+    private void initView() {
+        mCallingStatus = findViewById(R.id.calling_status);
+        mCallingName = findViewById(R.id.calling_name);
+        mCallingNotify = findViewById(R.id.calling_notify);
+        mCallingAnswer = findViewById(R.id.calling_answer);
+        mCallingAnswer.setOnClickListener(this);
+        mCallingReject = findViewById(R.id.calling_reject);
+        mCallingReject.setOnClickListener(this);
+        mCallingActionButton = findViewById(R.id.calling_action_button);
+        mCallingBlacksreen=findViewById(R.id.calling_blackscreen);
+    }
+
+
+
+    //camera section ends here
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -852,10 +922,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void toggleclick(View view) {
         if(togglebutton.isChecked())
             {
-                preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
-        String number = preferencess.getString("PHN","");
-        mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-        DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
+                this.getWindow().setFlags(
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
+                DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
 
 
         mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -870,47 +945,61 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            mMainTargetid = dataSnapshot.getValue().toString();
+                            if (dataSnapshot.exists()) {
+                                mMainTargetid = dataSnapshot.getValue().toString();
 //                                Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
                                 Log.d("id_found", String.valueOf(mMainTargetid));
-                            try {
-                                Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
+                                try {
+                                    Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
 
-                                Intent callscreen = new Intent(MainActivity.this, IncommingCallActivity.class);
-                                callscreen.putExtra("callid", currentcall.getCallId());
-                                callscreen.putExtra("incomming", false);
-                                callscreen.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(callscreen);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+//                                    Intent callscreen = new Intent(MainActivity.this, IncommingCallActivity.class);
+//                                    callscreen.putExtra("callid", currentcall.getCallId());
+//                                    callscreen.putExtra("incomming", false);
+//                                    callscreen.addFlags(FLAG_ACTIVITY_NEW_TASK);
+//                                    startActivity(callscreen);
+
+
+                                    //adding
+                                    call = Sinch_Apps.callClient.getCall(currentcall.getCallId());
+                                    isIncomming=false;
+                                    Sinch_UiUtils.setFullscreen(MainActivity.this, false);
+                                    mCallingStatus.setText("MEMANGGIL...");
+                                    mCallingAnswer.setVisibility(View.GONE);
+                                    mCallingName.setText(call.getRemoteUserId()+"");
+                                    mCallingReject.setText("END");
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                             }
-
+                            else
+                            {
+                                Toast.makeText(MainActivity.this,"Oops... Your Prime Contact doesn't has iSafe ):",Toast.LENGTH_LONG).show();
+                            }
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled (DatabaseError databaseError){
 
-                        }
+                            }
 
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 //        startActivity(new Intent(MainActivity.this, Sinch_MainActivity.class));
     }
         else
         {
-            Toast.makeText(this, "OFF", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Mic sharing turned off...", Toast.LENGTH_SHORT).show();
+            call.hangup();
+            recreate();
         }
     }
 
@@ -1096,4 +1185,87 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .show();
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        if(event.values[0]==0){
+            if(!isIncomming || call.getState() == CallState.ESTABLISHED) {
+                params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                params.screenBrightness = 0;
+                getWindow().setAttributes(params);
+                Sinch_UiUtils.enableDisableViewGroup((ViewGroup) findViewById(R.id.calling_root).getParent(), false);
+                Sinch_UiUtils.setFullscreen(this, true);
+                mCallingBlacksreen.setVisibility(View.VISIBLE);
+            }
+        }else {
+            params.screenBrightness = -1;
+            getWindow().setAttributes(params);
+            Sinch_UiUtils.enableDisableViewGroup((ViewGroup)findViewById(R.id.calling_root).getParent(),true);
+            Sinch_UiUtils.setFullscreen(this, false);
+            mCallingBlacksreen.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            default:
+                break;
+            case R.id.calling_answer:
+                call.answer();
+                mCallingAnswer.setVisibility(View.GONE);
+                mCallingReject.setText("END");
+                mCallingStatus.setText("ACTIVE CALL");
+                setBlinking(mCallingNotify, false);
+                if(r!=null)r.stop();
+                Sinch_UiUtils.setFullscreen(this, false);
+                break;
+            case R.id.calling_reject:
+                Toast.makeText(this,"Prime contact denied to access your live mic",Toast.LENGTH_LONG).show();
+                call.hangup();
+                if(r!=null)r.stop();
+                finish();
+                break;
+        }
+    }
+
+    private void setBlinking(View object, boolean status) {
+        if(!status){
+            object.animate().cancel();
+            return;
+        }
+        ObjectAnimator anim= ObjectAnimator.ofFloat(object, View.ALPHA, 0.1f,1.0f);
+        anim.setDuration(1000);
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.start();
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSinchLogging(SinchStatus.SinchLogger sinchLogger){
+        if(sinchLogger.message.contains("terminationCause=DENIED")&&!isIncomming){
+            if(r!=null)r.stop();
+            call.hangup();
+            Toast.makeText(this, "USER REJECTED", Toast.LENGTH_SHORT).show();
+            finish();
+        }else if(sinchLogger.message.contains("onSessionEstablished")){
+            mCallingStatus.setText("ACTIVE CALL");
+        }else if(sinchLogger.message.contains("onSessionTerminated")){
+            call.hangup();
+            if(r!=null)r.stop();
+            if(sinchLogger.message.contains("terminationCause=NO_ANSWER")){
+                Toast.makeText(this, "NO ANSWER", Toast.LENGTH_SHORT).show();
+            }else if(sinchLogger.message.contains("terminationCause=TIMEOUT")){
+                Toast.makeText(this, "TIMEOUT", Toast.LENGTH_SHORT).show();
+            }else if(sinchLogger.message.contains("terminationCause=CANCELED")){
+                Notification n = new NotificationCompat.Builder(this, "calling").setContentTitle("Missed Call").setAutoCancel(true).setContentText("You have missed call from " + call.getRemoteUserId()).setSmallIcon(android.R.drawable.sym_call_missed).build();
+                NotificationManagerCompat.from(this).notify(1133,n);
+            }
+            finish();
+        }
+    }
 }
