@@ -1015,7 +1015,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Camera getCameraInstance() {
         Camera camera = null;
         try {
-            camera = Camera.open();
+            camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
         } catch (Exception e) {
             // cannot get camera or does not exist
         }
