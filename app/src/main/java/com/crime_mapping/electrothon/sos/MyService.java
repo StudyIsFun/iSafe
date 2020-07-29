@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -49,6 +50,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     DatabaseReference locationRef = mRootRef.child("location").child(uId);
+    DatabaseReference locationRef_new;
     DatabaseReference myRef, myUserRef;
 
     ChildEventListener childEventListener;
@@ -62,12 +64,17 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     DatabaseReference databaseReference;
-
+    String phone,prime;
     public MyService() {
     }
 
     @Override
     public void onCreate() {
+        preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+        phone = preferences.getString("PHN","");
+        prime = preferences.getString("PrimeContact","");
+        Toast.makeText(this,"prinme "+prime,Toast.LENGTH_LONG).show();
+        locationRef_new = mRootRef.child("Shared_location").child(prime).child(phone);
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         CharSequence name = "SOS ALERT";
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -244,7 +251,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
 
     void updateUI() {
-
+        locationRef_new.child("Latitude").setValue(String.valueOf(lat));
+        locationRef_new.child("Longitude").setValue(String.valueOf(lon));
         locationRef.child("lat").setValue(String.valueOf(lat));
         locationRef.child("lon").setValue(String.valueOf(lon));
 //        locationRef.child(uId).setValue(new LatLng(Float.valueOf(lat), Float.valueOf(lon)));
