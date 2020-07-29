@@ -177,6 +177,7 @@
 
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/live"
                 android:layout_width="match_parent"
                 android:onClick="live_location"
