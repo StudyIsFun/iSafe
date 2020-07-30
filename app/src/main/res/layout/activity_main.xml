@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="#00041B"
-                        android:text="Press Button to Broadcast your location\n in case of emergency "
+                        android:text="@string/send_sos"
                         android:textAlignment="center"
                         android:textColor="#E6E2E2"
                         android:textSize="18sp"
@@ -115,7 +115,7 @@
                             android:textSize="10dp"
                             android:gravity="center"
                             android:textStyle="bold"
-                            android:text="Unsafe areas around me"
+                            android:text="@string/area_nearme"
                             ></TextView>
                     </LinearLayout>
 
@@ -147,7 +147,7 @@
                             android:textColor="#E6E2E2"
                             android:gravity="center"
                             android:textStyle="bold"
-                            android:text="Find the routes"
+                            android:text="@string/find_routes"
                             ></TextView>
                     </LinearLayout>
 
@@ -177,7 +177,7 @@
                             android:textColor="#E6E2E2"
                             android:gravity="center"
                             android:textStyle="bold"
-                            android:text="Profile"
+                            android:text="@string/profile"
                             ></TextView>
                     </LinearLayout>
                 </LinearLayout>
@@ -216,7 +216,7 @@
                             android:textColor="#E6E2E2"
                             android:gravity="center"
                             android:textStyle="bold"
-                            android:text="Mark position as crime spot"
+                            android:text="@string/mark_spot"
                             ></TextView>
                     </LinearLayout>
                     <LinearLayout
@@ -245,7 +245,7 @@
                             android:textColor="#E6E2E2"
                             android:textStyle="bold"
                             android:gravity="center"
-                            android:text="Share live location"
+                            android:text="@string/share_loc"
                             ></TextView>
                     </LinearLayout>
 
@@ -276,7 +276,7 @@
                             android:textColor="#E6E2E2"
                             android:textStyle="bold"
                             android:gravity="center"
-                            android:text="Location shared with you"
+                            android:text="@string/shared_loc_with_me"
                             ></TextView>
                     </LinearLayout>
                 </LinearLayout>
@@ -306,6 +306,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_marginTop="15dp"
@@ -321,10 +323,10 @@
                             android:layout_height="50dp">
                         </ImageView>
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="160dp"
                             android:layout_height="50dp"
-                            android:text="Share Live Camera"
-                            android:gravity="center"
+                            android:text="@string/share_live_cam"
+                            android:gravity="left"
                             android:layout_marginStart="10dp"
                             android:textColor="#fff"
                             android:layout_marginLeft="10dp" />
@@ -333,19 +335,13 @@
                             android:id="@+id/togglebutton"
                             android:layout_marginStart="53dp"
                             android:layout_width="wrap_content"
+                            android:gravity="left"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:onClick="onToggleClicked"
-                            android:layout_marginLeft="80dp" />
-<!--                        <ToggleButton-->
-<!--                            android:layout_marginStart="80dp"-->
-<!--                            android:gravity="start|center_vertical"-->
-<!--                            android:id="@+id/simpleToggleButton"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:checked="false"-->
-<!--                            android:layout_marginLeft="50dp" />-->
+                            android:layout_marginLeft="100dp" />
+
                     </LinearLayout>
                     <LinearLayout
                         android:layout_marginTop="5dp"
@@ -361,22 +357,23 @@
                             android:layout_height="50dp">
                         </ImageView>
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="160dp"
                             android:layout_height="50dp"
-                            android:text="Share Live Microphone"
-                            android:gravity="center"
+                            android:text="@string/share_live_mic"
+                            android:gravity="left"
                             android:layout_marginStart="10dp"
                             android:textColor="#fff"
                             android:layout_marginLeft="10dp" />
                         <ToggleButton
                             android:id="@+id/togglebutton2"
                             android:layout_marginStart="53dp"
+                            android:gravity="left"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:onClick="toggleclick"
-                            android:layout_marginLeft="53dp" />
+                            android:layout_marginLeft="40dp" />
                     </LinearLayout>
                 </LinearLayout>
                 <View
@@ -573,7 +570,7 @@
                             android:layout_margin="10dp"
                             android:backgroundTint="#00041B"
                             android:onClick="changeServiceState"
-                            android:text="Stop background service"
+                            android:text="@string/start_stop_services"
                             android:textColor="#E6E2E2"
                             app:layout_constraintBottom_toTopOf="@+id/textView5"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -588,7 +585,7 @@
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:backgroundTint="#00041B"
-                            android:text="Fetching Your Location..."
+                            android:text="@string/fetching_loc"
                             android:textAlignment="center"
                             android:textColor="#E6E2E2"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -605,7 +602,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:backgroundTint="#00041B"
-                            android:text="Your Current Location"
+                            android:text="@string/ur_location"
                             android:textAlignment="center"
                             android:textColor="#E6E2E2"
                             android:textSize="18sp"

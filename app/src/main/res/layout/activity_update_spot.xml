@@ -33,7 +33,7 @@
                 android:background="@drawable/edit_text_background"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="userID"
+                android:hint="@string/user_id"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -44,7 +44,7 @@
                 android:paddingStart="20dp"
 
                 android:paddingEnd="20dp"
-                android:hint="password"
+                android:hint="@string/password"
                 android:background="@drawable/edit_text_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:hint="Enter the ancident details"
+                android:hint="@string/crime"
                 android:id="@+id/detail">
             </EditText>
             <Button
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/new_button_background"
                 android:onClick="submit"
-                android:text="Feed with your location">
+                android:text="@string/feed_with_loc">
 
             </Button>
             <View
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/new_button_background"
                 android:onClick="custom_submit"
-                android:text="Feed Selected location">
+                android:text="@string/feed_with_custom">
 
             </Button>
         </LinearLayout>
