@@ -10,11 +10,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-<<<<<<< HEAD
+
 import android.util.Log;
 import android.view.MotionEvent;
-=======
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,12 +25,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
-<<<<<<< HEAD
 import com.crime_mapping.electrothon.sos.api.ApiClient;
 import com.crime_mapping.electrothon.sos.api.ApiInterface;
 import com.crime_mapping.electrothon.sos.api.Crime;
-=======
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
@@ -42,19 +39,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-<<<<<<< HEAD
+
 import com.google.firebase.database.DatabaseReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-=======
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
 
 public class update_spot extends FragmentActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback{
     private EditText e1, e2,e3;
@@ -69,10 +65,7 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
     DatabaseReference user_no;
     String provider;
     String latti,longgi;
-<<<<<<< HEAD
-=======
-    //    double latti=0,longi=0;
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
+
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
 
@@ -95,54 +88,13 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
         mapfrag.getMapAsync(update_spot.this);
     }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
     public void submit(View view) {
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
         if(s1.equals("risi") && s2.equals("risi"))
         {
-<<<<<<< HEAD
             push();
-=======
-
-
-            user_no = FirebaseDatabase.getInstance().getReference().child("spots");
-            user_no.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    if(dataSnapshot.exists()){
-                        for(DataSnapshot ds: dataSnapshot.getChildren())
-                        {
-                            no_user++;
-                        }
-                    }
-                    Toast.makeText(update_spot.this ,String.valueOf(no_user) ,Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-
-
-            });
-
-            if(latti!=null && longgi != null)
-            {
-//                String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference().child("spots").child(String.valueOf(no_user/3+1));
-                firebaseDatabase.child("lat").setValue(latti);
-                firebaseDatabase.child("lon").setValue(longgi);
-                firebaseDatabase.child("details").setValue(e3.getText().toString());
-                Toast.makeText(update_spot.this,latti+" "+longgi, Toast.LENGTH_LONG).show();
-
-            }
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
         }
     }
 
@@ -157,7 +109,7 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
 
 
     public void custom_submit(View view) {
-<<<<<<< HEAD
+
 //        Toast.makeText(this,"Latti : "+latti+" Longi : "+longgi,Toast.LENGTH_LONG).show();
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
@@ -165,9 +117,6 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
         {
             push();
         }
-=======
-        Toast.makeText(this,"Latti : "+latti+" Longi : "+longgi,Toast.LENGTH_LONG).show();
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
     }
 
     @Override
@@ -218,7 +167,6 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-<<<<<<< HEAD
 
     void push()
     {
@@ -241,6 +189,5 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
             });
         }
     }
-=======
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
+
 }

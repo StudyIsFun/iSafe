@@ -19,7 +19,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Profile Details"
+                android:text="@string/profile_details"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="#FAF9F9"
@@ -40,7 +40,7 @@
                 android:layout_height="35dp"
                 android:background="@drawable/edit_text_background"
                 android:inputType="textPersonName"
-                android:hint="Enter Your Name" />
+                android:hint="@string/ur_name" />
 
             <TextView
                 android:layout_marginTop="20dp"
@@ -55,7 +55,7 @@
                 android:layout_height="35dp"
                 android:background="@drawable/edit_text_background"
                 android:inputType="textPersonName"
-                android:text="Your phone no" />
+                android:text="@string/ur_phone" />
 
             <EditText
                 android:layout_marginTop="20dp"
@@ -70,7 +70,7 @@
                 android:layout_height="35dp"
                 android:background="@drawable/edit_text_background"
                 android:inputType="textPersonName"
-                android:hint="Enter Your Blood group" />
+                android:hint="@string/ur_blood_grp" />
 
             <Button
                 android:id="@+id/submit_profile"
@@ -86,7 +86,7 @@
                 android:background="@drawable/new_button_background"
                 android:backgroundTint="#00041B"
                 android:layout_height="wrap_content"
-                android:text="Submit" />
+                android:text="@string/submit" />
 
             <View
                 android:layout_marginTop="29dp"
@@ -100,7 +100,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Update Prime Contact"
+                android:text="@string/update_prime"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="#FAF9F9"
@@ -131,7 +131,7 @@
                 android:layout_height="35dp"
                 android:background="@drawable/edit_text_background"
                 android:inputType="textPersonName"
-                android:hint="Enter Your No" />
+                android:hint="@string/ur_phone" />
 
             <Button
                 android:id="@+id/button4"
@@ -172,7 +172,7 @@
                 android:background="@drawable/new_button_background"
                 android:backgroundTint="#00041B"
                 android:layout_height="wrap_content"
-                android:text="Submit" />
+                android:text="@string/submit" />
 
 
 

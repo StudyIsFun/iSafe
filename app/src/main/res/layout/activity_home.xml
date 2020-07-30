@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/poppinsbold"
-        android:text="Welcome"
+        android:text="@string/welcome"
         android:textColor="@color/color5"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"

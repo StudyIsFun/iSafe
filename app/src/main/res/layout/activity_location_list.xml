@@ -33,7 +33,7 @@
             android:elevation="10dp"
             android:padding="10dp"
             android:background="#ff90caf9"
-            android:text="Click on User to Check their last location on Google Maps"
+            android:text="@string/show_sos"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold"
