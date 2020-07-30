@@ -2,6 +2,11 @@
 # API Documentation
 
 All the API endpoints take arguments lat & long. `lat` here means latitude and `long` means longitude. Similarly, `lat1`, `long1` and `lat2`,`long2` denote a pair of co-ordinates.
+### Make sure that Lattitude(lat) and Longitude(long) are in the following range(Range for India)
+    North: 35.674521°N 76.844485
+    South: 6.74678°N 93.84260
+    East: 28.01168°N 97.39564
+    West: 23.6261°N 68.1941
 
 ## Endpoints
 

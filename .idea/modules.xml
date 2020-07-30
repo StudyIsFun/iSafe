@@ -6,6 +6,11 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/calling-master.iml" filepath="$PROJECT_DIR$/.idea/modules/calling-master.iml" group="calling-master" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" group="calling-master/app" />
+<<<<<<< HEAD
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iSafe-final.iml" filepath="$PROJECT_DIR$/.idea/modules/iSafe-final.iml" group="iSafe-final" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" group="iSafe-final/app" />
+=======
+>>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
     </modules>
   </component>
 </project>

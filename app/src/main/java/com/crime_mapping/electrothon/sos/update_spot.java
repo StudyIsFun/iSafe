@@ -10,8 +10,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.MotionEvent;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +28,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.crime_mapping.electrothon.sos.api.ApiClient;
 import com.crime_mapping.electrothon.sos.api.ApiInterface;
 import com.crime_mapping.electrothon.sos.api.Crime;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
@@ -36,11 +39,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.google.firebase.database.DatabaseReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class update_spot extends FragmentActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback{
     private EditText e1, e2,e3;
@@ -55,6 +65,7 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
     DatabaseReference user_no;
     String provider;
     String latti,longgi;
+
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
 
@@ -77,6 +88,7 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
         mapfrag.getMapAsync(update_spot.this);
     }
 
+
     public void submit(View view) {
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
@@ -97,6 +109,7 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
 
 
     public void custom_submit(View view) {
+
 //        Toast.makeText(this,"Latti : "+latti+" Longi : "+longgi,Toast.LENGTH_LONG).show();
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
@@ -176,4 +189,5 @@ public class update_spot extends FragmentActivity implements  GoogleApiClient.Co
             });
         }
     }
+
 }

@@ -4,7 +4,11 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.crime_mapping.electrothon.sos"
+<<<<<<< HEAD
+        minSdkVersion 26
+=======
         minSdkVersion 16
+>>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -26,6 +30,14 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation 'androidx.appcompat:appcompat:1.0.0'
+<<<<<<< HEAD
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+
+=======
+>>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
     implementation(name: 'sinch-android-rtc', version: '+', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
