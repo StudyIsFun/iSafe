@@ -1,8 +1,11 @@
 package com.crime_mapping.electrothon.sos;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,11 +16,14 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.crime_mapping.electrothon.sos.directionhelpers.FetchURL;
 import com.crime_mapping.electrothon.sos.directionhelpers.TaskLoadedCallback;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -26,11 +32,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.widget.Toast.LENGTH_LONG;
 
 public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
+    private static final String TAG = "MapsActivity3";
     private GoogleMap mMap;
     Circle circle;
     FirebaseDatabase firebaseDatabase;
@@ -40,11 +56,18 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     private Polyline currentPolyline;
     private MarkerOptions place1, place2;
     ArrayList<LatLng> listpoints;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    Retrofit retrofit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps3);
+
+        preferences = getSharedPreferences("App", MODE_PRIVATE);
+        editor = preferences.edit();
 
         if (ContextCompat.checkSelfPermission(MapsActivity3.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -124,7 +147,7 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                if(listpoints.size()==2) {
+                if (listpoints.size() == 2) {
                     listpoints.clear();
                     mMap.clear();
                 }
@@ -132,36 +155,27 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
 
-                if(listpoints.size()==1)
-                {
+                if (listpoints.size() == 1) {
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                     place1 = new MarkerOptions().position(latLng).title("Location 1");
                     xx = latLng;
-                    Toast.makeText(MapsActivity3.this,String.valueOf(listpoints.get(0)), LENGTH_LONG).show();
+                    Toast.makeText(MapsActivity3.this, String.valueOf(listpoints.get(0)), LENGTH_LONG).show();
 
-                }
-                else
-                {
+                } else {
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                     place2 = new MarkerOptions().position(latLng).title("Location 2");
-                    yy=latLng;
-                    Toast.makeText(MapsActivity3.this,String.valueOf(listpoints.get(1)), LENGTH_LONG).show();
+                    yy = latLng;
+                    Toast.makeText(MapsActivity3.this, String.valueOf(listpoints.get(1)), LENGTH_LONG).show();
                 }
                 mMap.addMarker(markerOptions);
             }
 
-            LatLng point = new LatLng(31.703924,76.526188);
-//            Circle circle = mMap.addCircle(new CircleOptions()
-//                    .center(point)
-//                    .radius(20)
-//                    .strokeColor(Color.BLUE)
-//                    .strokeWidth(2f)
-//                    .fillColor(Color.argb(50,255,0,0)));
 
         });
 
 //        mMap.addCircle(new CircleOptions().radius(20).strokeColor(Color.argb(30,200,0,0)).strokeWidth(2f).fillColor(0x30ff0000));
     }
+
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
         String str_origin = "origins=" + origin.latitude + "," + origin.longitude;
@@ -174,7 +188,7 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
         // Output format
         String output = "json";
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/json?"+parameters+ "&key=AIzaSyCWEKwOS-WbdQ3QpspGBFGObIl0WI3x9yQ";
+        String url = "https://maps.googleapis.com/maps/api/directions/json?" + parameters + "&key=AIzaSyCWEKwOS-WbdQ3QpspGBFGObIl0WI3x9yQ";
 //        String url = "//https://api.distancematrix.ai/maps/api/distancematrix/json?origins=31.706746,%2076.528922&destinations=31.701881,%2076.522603&key=Eewaeb9aeRahex7fie3geenguxaep";
 //        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
         return url;
@@ -182,7 +196,6 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
 
 //        https://api.distancematrix.ai/maps/api/distancematrix/json?origins=31.706746,%2076.528922&destinations=31.701881,%2076.522603&key=Eewaeb9aeRahex7fie3geenguxaep
     }
-
 
 
     @Override
@@ -194,42 +207,64 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void hoo(View view) {
-//        databaseReference = FirebaseDatabase.getInstance().getReference().child("area");
-//        Toast.makeText(MapsActivity.this,databaseReference.toString(),Toast.LENGTH_SHORT).show();
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-//                    String s1 = postSnapshot.child("lat").getValue().toString();
-//                    String s2 = postSnapshot.child("lon").getValue().toString();
-////                    Toast.makeText(MapsActivity.this,postSnapshot.toString(),Toast.LENGTH_SHORT).show();
-//                    Double a = Double.valueOf(s1);
-//                    Double b = Double.valueOf(s2);
-//                    LatLng points = new LatLng(a,b);
-//                    Circle circle = mMap.addCircle(new CircleOptions()
-//                            .center(points)
-//                            .radius(20)
-//                            .strokeColor(Color.BLUE)
-//                            .strokeWidth(2f)
-//                            .fillColor(Color.argb(50,255,0,0)));
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+
+        /*
         String lat1 = String.valueOf(xx.latitude);
         String lon1 = String.valueOf(xx.longitude);
         String lat2 = String.valueOf(yy.latitude);
         String lon2 = String.valueOf(yy.longitude);
+        editor.putString("lat1", lat1);
+        editor.putString("lat2", lat2);
+        editor.putString("lon1", lon1);
+        editor.putString("lon2", lon2);
+        editor.commit();
         FirebaseDatabase.getInstance().getReference().setValue(lat1);
         FirebaseDatabase.getInstance().getReference().child("area").child("2").child("lon").setValue(lon1);
         //        Toast.makeText(this,xx.latitude+" "+xx.longitude,Toast.LENGTH_SHORT).show();
-        String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+lat1+","+lon1+"&destination="+lat2+","+lon2+"&mode=driving&key=AIzaSyCWEKwOS-WbdQ3QpspGBFGObIl0WI3x9yQ";
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + lat1 + "," + lon1 + "&destination=" + lat2 + "," + lon2 + "&mode=driving&key=AIzaSyCWEKwOS-WbdQ3QpspGBFGObIl0WI3x9yQ";
         new FetchURL(MapsActivity3.this).execute((url), "driving");
+
+         */
+
+
+        OkHttpClient.Builder okhttpbuilder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        okhttpbuilder.addInterceptor(logging);
+
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl("https://sihapi--psproject.repl.co/")
+                .addConverterFactory(GsonConverterFactory.create());
+
+        retrofit = builder.build();
+
+        SihApi sihApi = retrofit.create(SihApi.class);
+        Call<RouteResponse> call = sihApi.getRoutes("31.708508", "76.527356", "31.689422", "76.519561");
+        call.enqueue(new Callback<RouteResponse>() {
+            @Override
+            public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
+                if (response.isSuccessful()) {
+                    Data[] data = response.body().getData();
+                    Log.e(TAG, "" + data);
+                    for (Data data1 : data) {
+                        LatLng point = new LatLng(data1.getX(), data1.getY());
+                        Circle circle = mMap.addCircle(new CircleOptions()
+                                .center(point).radius(20)
+                                .strokeColor(Color.BLUE)
+                                .strokeWidth(2f)
+                                .fillColor(Color.argb(50, 255, 0, 0)));
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(point, 16);
+                        mMap.animateCamera(cameraUpdate);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RouteResponse> call, Throwable t) {
+                Log.e(TAG, "" + t.getMessage());
+            }
+        });
 
     }
 
