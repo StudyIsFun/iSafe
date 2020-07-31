@@ -43,7 +43,6 @@
         android:alpha="0.9"
         android:text="@string/verify_code"
         android:textColor="@color/white"
-        android:background="@drawable/button_background"
         app:layout_constraintBottom_toTopOf="@+id/tvBody"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +54,6 @@
         style="@style/BodyText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_background"
         android:text="@string/verify_code_content"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
@@ -94,7 +92,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/button_background">
+            android:background="#E62D2E33">
 
             <com.alimuzaffar.lib.pin.PinEntryEditText
                 android:id="@+id/etCode"

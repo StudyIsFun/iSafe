@@ -3,7 +3,6 @@ package com.crime_mapping.electrothon.sos;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -89,7 +87,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -230,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startService(new Intent(this, SinchService.class));
         togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
         togglebutton1 = (ToggleButton)findViewById(R.id.togglebutton);
-        loadLocale();
+
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
         no = preferences.getString("PHN", "");
@@ -434,28 +431,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             requestPermission();
         }
 
-    }
-
-    private void setLocale(String lang) {
-//        Toast.makeText(this,lang,Toast.LENGTH_LONG).show();
-        Log.d("new lang",lang);
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
-
-        //saving data in shared prefrences
-        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
-        editor.putString("My_Langg",lang);
-
-        editor.apply();
-
-    }
-    public void loadLocale(){
-        SharedPreferences prefs = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
-        String language = prefs.getString("My_Langg","");
-        setLocale(language);
     }
 
 

@@ -1,9 +1,14 @@
 <resources>
-
+    <string name="app_name">SOS</string>
     <string name="action_settings">Settings</string>
+
     <string name="title_activity_incomming_call">IncommingCallActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+
+<!--    /////////////////////////////////////-->
+
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -19,7 +24,7 @@
         completions."
     </string>
 
-    <!--    <string name="google_maps_key">AIzaSyAqYjoLrmjVFyB-A_Oihv8AiYUex603XKk</string>-->
+<!--    <string name="google_maps_key">AIzaSyAqYjoLrmjVFyB-A_Oihv8AiYUex603XKk</string>-->
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -86,15 +91,19 @@
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="app_name">iSafe</string>
     <string name="pref_header_notifications">Notifications</string>
+
     <string name="pref_title_new_message_notifications">New message notifications</string>
+
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
+
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_maps2">Map</string>
     <string name="title_activity_maps3">Map</string>
     <string name="title_activity_maps4">Map</string>
+
+
     <string name="verify_code">Verification Code</string>
     <string name="verify_code_content">Enter the six digit verification code sent to your mobile.</string>
     <string name="enter_no">Mobile Verification</string>
@@ -102,37 +111,10 @@
     <string name="next">NEXT</string>
     <string name="contact">Contact Number</string>
     <string name="verify">Verify</string>
+
     <string name="about">About</string>
     <string name="settings">Settings</string>
     <string name="help">Help</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="profile">Profile</string>
-    <string name="welcome">Welcome</string>
-    <string name="show_sos">Click on User to Check their last location on Google Maps</string>
-    <string name="send_sos">"Press Button to Broadcast your location\n in case of emergency "</string>
-    <string name="area_nearme">Unsafe areas around me</string>
-    <string name="find_routes">Find the routes</string>
-    <string name="mark_spot">Mark position as crime spot</string>
-    <string name="share_loc">Share live location</string>
-    <string name="shared_loc_with_me">Location shared with you</string>
-    <string name="share_live_cam">Share Live Camera  </string>
-    <string name="share_live_mic">Share Live Microphone</string>
-    <string name="start_stop_services">Stop background service</string>
-    <string name="ur_location">Your Current Location</string>
-    <string name="fetching_loc">Fetching Your Location...</string>
-    <string name="profile_details">Profile Details</string>
-    <string name="ur_name">Enter Your Name</string>
-    <string name="ur_phone">Your phone no</string>
-    <string name="ur_blood_grp">Enter Your Blood group</string>
-    <string name="submit">Submit</string>
-    <string name="update_prime">Update Prime Contact</string>
-    <string name="user_id">userID</string>
-    <string name="password">password</string>
-    <string name="crime">Enter the ancident details</string>
-    <string name="feed_with_loc">Feed with your location</string>
-    <string name="feed_with_custom">Feed Selected location</string>
-    <string name="get_code">Get Code</string>
-    <string name="answer">ANSWER</string>
-    <string name="reject">REJECT</string>
-    <string name="change_lang">Choose Language</string>
 </resources>
