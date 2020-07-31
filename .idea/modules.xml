@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VoiceCallApp.iml" filepath="$PROJECT_DIR$/VoiceCallApp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/calling-master.iml" filepath="$PROJECT_DIR$/.idea/modules/calling-master.iml" group="calling-master" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" group="calling-master/app" />
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iSafe-final.iml" filepath="$PROJECT_DIR$/.idea/modules/iSafe-final.iml" group="iSafe-final" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" group="iSafe-final/app" />
-=======
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="iSafe_SIH/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/iSafe_SIH.iml" filepath="$PROJECT_DIR$/.idea/iSafe_SIH.iml" group="iSafe_SIH" />
     </modules>
   </component>
 </project>
