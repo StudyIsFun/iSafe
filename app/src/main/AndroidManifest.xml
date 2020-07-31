@@ -8,12 +8,15 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- //for camera -->
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
+<!--    //for camera-->
+    <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- //for location -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+<!--    //for location-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -28,31 +31,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".language">
-        </activity>
         <activity
             android:name=".Sinch_MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
 
+        </activity>
 
         <service
             android:name=".SinchService"
             android:enabled="true"
             android:exported="true" />
+        <activity android:name=".IncommingCallActivity" android:theme="@style/AppTheme.NoActionBar" android:excludeFromRecents="true" />
 
-        <activity
-            android:name=".IncommingCallActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyCamera"></activity> <!-- for location -->
+
+        <activity android:name="com.crime_mapping.electrothon.sos.MyCamera">
+
+        </activity>
+
+<!--        for location-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
             android:name=".MapsActivity4"
-            android:label="@string/title_activity_maps4" />
+            android:label="@string/title_activity_maps4"></activity>
         <activity android:name=".prime_contacts" />
         <activity
             android:name=".MapsActivity3"
@@ -83,5 +87,4 @@
 
         <activity android:name=".AboutActivity" />
     </application>
-
 </manifest>

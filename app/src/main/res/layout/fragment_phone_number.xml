@@ -34,7 +34,6 @@
     <TextView
         android:id="@+id/tvHeader"
         style="@style/HeaderText"
-        android:background="@drawable/button_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -49,7 +48,6 @@
     <TextView
         android:id="@+id/tvBody"
         style="@style/BodyText"
-        android:background="@drawable/button_background"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/enter_no_body"
@@ -86,7 +84,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:background="#E62D2E33">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPhoneNumber"
@@ -97,7 +95,6 @@
                 android:layout_marginEnd="24dp"
                 android:hint="Enter phone number"
                 app:endIconMode="custom"
-                android:background="@drawable/button_background"
                 app:hintTextColor="@color/color5"
                 app:layout_constraintBottom_toTopOf="@id/btnGetCode"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +108,7 @@
                     android:layout_height="match_parent"
                     android:textColorHint="@color/white"
                     android:inputType="number" />
-                android:hint="@string/ur_phone"
+                android:hint="Enter phone number"
                 android:inputType="number"
                 android:textColorHint="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -123,7 +120,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
-                android:text="@string/get_code"
+                android:text="Get Code"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="270:50"
                 app:layout_constraintEnd_toEndOf="parent"

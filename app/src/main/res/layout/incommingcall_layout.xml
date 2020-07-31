@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#22aa11"
-                android:text="@string/answer"
+                android:text="ANSWER"
                 android:textColor="#fff" />
 
             <Button
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#aa2211"
-                android:text="@string/reject"
+                android:text="REJECT"
                 android:textColor="#fff" />
         </LinearLayout>
     </RelativeLayout>
