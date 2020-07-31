@@ -44,6 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "MpasActivity2";
     private GoogleMap mMap;
     String a1, a2;
     double lat, lon;
@@ -80,32 +81,36 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
         okhttpbuilder.addInterceptor(logging);
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://demo9608891.mockable.io/")
+                .baseUrl("https://sihapi--psproject.repl.co/")
                 .addConverterFactory(GsonConverterFactory.create());
 
         retrofit = builder.build();
 
         SihApi sihApi = retrofit.create(SihApi.class);
-        Call<List<LatLong>> call = sihApi.getCoordinates();
-        call.enqueue(new Callback<List<LatLong>>() {
+        Call<RouteResponse> call = sihApi.getUnsafeAreas(a1, a2);
+        call.enqueue(new Callback<RouteResponse>() {
             @Override
-            public void onResponse(Call<List<LatLong>> call, Response<List<LatLong>> response) {
-                Log.e("response", "" + response.code());
+            public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
                 if (response.isSuccessful()) {
-                    List<LatLong> list = response.body();
-                    for (LatLong latLong : list) {
-                        Pointslist.add(new LatLng(latLong.getLat(), latLong.getLng()));
-                        Log.e("list", "" + latLong.getLat());
+                    Data[] data = response.body().getData();
+                    Log.e(TAG, "" + data);
+                    for (Data data1 : data) {
+                        LatLng ltlng = new LatLng(data1.getX(), data1.getY());
+                        mMap.addMarker(new MarkerOptions().position(ltlng).title(data1.getDescription()));
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ltlng, 16);
+                        mMap.animateCamera(cameraUpdate);
+
                     }
-                    addHeatMap();
+
                 }
             }
 
             @Override
-            public void onFailure(Call<List<LatLong>> call, Throwable t) {
-                Log.e("failed", "" + t.getMessage());
+            public void onFailure(Call<RouteResponse> call, Throwable t) {
+
             }
         });
+
 
     }
 
@@ -186,8 +191,8 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
 
         FetchCoordinates();
         mMap.setMyLocationEnabled(true);
-        LatLng points = new LatLng(31.708535, 76.527377);
-        mMap.addMarker(new MarkerOptions().position(points).title("NIT Hamirpur"));
+        LatLng points = new LatLng(lat, lon);
+        mMap.addMarker(new MarkerOptions().position(points).title("You"));
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(points, 16);
         mMap.animateCamera(cameraUpdate);
     }

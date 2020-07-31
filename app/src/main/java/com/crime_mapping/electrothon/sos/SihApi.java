@@ -13,8 +13,8 @@ public interface SihApi {
     @GET("crime")
     Call<Post> sendPosts(@Header("Content-type") String header, @Query("lat") String lat, @Query("long") String lon, @Query("crime") String crime);
 
-    @GET
-    Call<String> getUnsafeAreas(@Url String url);
+    @GET("nearby")
+    Call<RouteResponse> getUnsafeAreas(@Query("lat") String lat1, @Query("long") String lon1);
 
     @GET("heatmap")
     Call<List<LatLong>> getCoordinates();
