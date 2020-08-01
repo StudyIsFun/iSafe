@@ -64,16 +64,17 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     DatabaseReference databaseReference;
-    String phone,prime;
+    String phone, prime;
+
     public MyService() {
     }
 
     @Override
     public void onCreate() {
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
-        phone = preferences.getString("PHN","");
-        prime = preferences.getString("PrimeContact","");
-        Toast.makeText(this,"prinme "+prime,Toast.LENGTH_LONG).show();
+        phone = preferences.getString("PHN", "");
+        prime = preferences.getString("PrimeContact", "");
+        Toast.makeText(this, "prinme " + prime, Toast.LENGTH_LONG).show();
         locationRef_new = mRootRef.child("Shared_location").child(prime).child(phone);
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         CharSequence name = "SOS ALERT";
@@ -221,11 +222,19 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             Log.d("response", "" + lat + lon);
 
             if (preferences.getBoolean("AllowLocSharing", false)) {
-                databaseReference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(preferences.getString("PrimeContact", ""));
-                Map<String,Double> details = new HashMap<>();
+                preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
+                editor = preferences.edit();
+                final String no = preferences.getString("PHN", "");
+
+                databaseReference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(preferences.getString("PrimeContact", "")).child(no);
+                Map<String, Object> details = new HashMap<>();
                 details.put("Latitude", lat);
                 details.put("Longitude", lon);
+                details.put("Name", "Pal");
                 databaseReference.setValue(details);
+
+
+
             }
         }
         updateUI();

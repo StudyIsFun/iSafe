@@ -92,7 +92,7 @@ import java.util.TimerTask;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback,View.OnClickListener, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, View.OnClickListener, SensorEventListener {
     private GoogleMap mMap;
     private String prime_id = null;
     private String phone_no;
@@ -120,12 +120,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     TextView tv;
     Button b;
 
-    private int cnt=5000;
+    private int cnt = 5000;
     //Firebase Variables
 //    static {
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 //    }
-    private ToggleButton togglebutton1,togglebutton;
+    private ToggleButton togglebutton1, togglebutton;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseuser;
     FirebaseDatabase database;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String mEmail;
     private String mUid;
     public String a1, a2;
-    Double l1=0.00, l2=0.00, ll1, ll2;
+    Double l1 = 0.00, l2 = 0.00, ll1, ll2;
     //Notification
     NotificationManager nm;
     String CHANNEL_ID = "my_sos_channel";// The id of the channel.
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private SensorManager mSensorManager;
     private Sensor mProximity;
     private View mCallingBlacksreen;
-
+    boolean flag = false;
 
 
     @Override
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mProximity,SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         b = findViewById(R.id.button);
         startService(new Intent(this, SinchService.class));
         togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
-        togglebutton1 = (ToggleButton)findViewById(R.id.togglebutton);
+        togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton);
 
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
-        number = preferencess.getString("PHN","");
+        number = preferencess.getString("PHN", "");
         initView();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -260,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-
 
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -403,7 +402,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
 
-
         //for camera things
         if (checkPermission()) {
 //            setContentView(R.layout.activity_main);
@@ -444,9 +442,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mCallingReject = findViewById(R.id.calling_reject);
         mCallingReject.setOnClickListener(this);
         mCallingActionButton = findViewById(R.id.calling_action_button);
-        mCallingBlacksreen=findViewById(R.id.calling_blackscreen);
+        mCallingBlacksreen = findViewById(R.id.calling_blackscreen);
     }
-
 
 
     //camera section ends here
@@ -729,13 +726,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                /*
                 if (dataSnapshot.hasChild(no)) {
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "No user have shared location with you.", Toast.LENGTH_SHORT).show();
                 }
+                 */
+                if (dataSnapshot.hasChild(no)) {
+                    flag = true;
+                }
+              /*
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.e("snapshot", "" + snapshot.getKey());
+                }
 
+               */
             }
 
             @Override
@@ -743,6 +748,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             }
         });
+
+        if (flag) {
+            Intent intent = new Intent(MainActivity.this, AllContacts.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -903,7 +913,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void onToggleClicked(View view) {
-        if(togglebutton1.isChecked()) {
+        if (togglebutton1.isChecked()) {
             Toast.makeText(this, "Your live camera is being shared", Toast.LENGTH_SHORT).show();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -914,46 +924,43 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             }, 0, 5000);
 //        startActivity(new Intent(MainActivity.this, MyCamera.class));
-        }
-        else
-        {
+        } else {
             mCamera.stopPreview();
             Toast.makeText(this, "Camera sharing off", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void toggleclick(View view) {
-        if(togglebutton.isChecked())
-            {
-                this.getWindow().setFlags(
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-                DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
+        if (togglebutton.isChecked()) {
+            this.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
+            DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
 
 
-        mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                prime_id = snapshot.getValue().toString();
+            mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    prime_id = snapshot.getValue().toString();
 
-                //if prime_id is received,searching in contact table
-                DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
-                //            mContactReference = mRootReference.child("Contact").child(prime_id);
-                try {
-                    mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                mMainTargetid = dataSnapshot.getValue().toString();
+                    //if prime_id is received,searching in contact table
+                    DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
+                    //            mContactReference = mRootReference.child("Contact").child(prime_id);
+                    try {
+                        mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    mMainTargetid = dataSnapshot.getValue().toString();
 //                                Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
-                                Log.d("id_found", String.valueOf(mMainTargetid));
-                                try {
-                                    Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
+                                    Log.d("id_found", String.valueOf(mMainTargetid));
+                                    try {
+                                        Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
 
 //                                    Intent callscreen = new Intent(MainActivity.this, IncommingCallActivity.class);
 //                                    callscreen.putExtra("callid", currentcall.getCallId());
@@ -962,44 +969,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //                                    startActivity(callscreen);
 
 
-                                    //adding
-                                    call = Sinch_Apps.callClient.getCall(currentcall.getCallId());
-                                    isIncomming=false;
-                                    Sinch_UiUtils.setFullscreen(MainActivity.this, false);
-                                    mCallingStatus.setText("MEMANGGIL...");
-                                    mCallingAnswer.setVisibility(View.GONE);
-                                    mCallingName.setText(call.getRemoteUserId()+"");
-                                    mCallingReject.setText("END");
+                                        //adding
+                                        call = Sinch_Apps.callClient.getCall(currentcall.getCallId());
+                                        isIncomming = false;
+                                        Sinch_UiUtils.setFullscreen(MainActivity.this, false);
+                                        mCallingStatus.setText("MEMANGGIL...");
+                                        mCallingAnswer.setVisibility(View.GONE);
+                                        mCallingName.setText(call.getRemoteUserId() + "");
+                                        mCallingReject.setText("END");
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Oops... Your Prime Contact doesn't has iSafe ):", Toast.LENGTH_LONG).show();
                                 }
-
                             }
-                            else
-                            {
-                                Toast.makeText(MainActivity.this,"Oops... Your Prime Contact doesn't has iSafe ):",Toast.LENGTH_LONG).show();
-                            }
-                        }
 
                             @Override
-                            public void onCancelled (DatabaseError databaseError){
+                            public void onCancelled(DatabaseError databaseError) {
 
                             }
 
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
 //        startActivity(new Intent(MainActivity.this, Sinch_MainActivity.class));
-    }
-        else
-        {
+        } else {
             Toast.makeText(this, "Mic sharing turned off...", Toast.LENGTH_SHORT).show();
             call.hangup();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -1007,8 +1011,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
     }
-
-
 
 
     //camera data
@@ -1036,12 +1038,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 fos.close();
 
                 file_path = String.valueOf(pictureFile);
-                Log.d("image",String.valueOf(pictureFile));
+                Log.d("image", String.valueOf(pictureFile));
                 String[] arr = file_path.split("/");
                 int sz = arr.length;
-                Log.d("image_id",arr[sz-1]);
+                Log.d("image_id", arr[sz - 1]);
                 StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
-                StorageReference riversRef = mStorageRef.child(no+"/"+arr[sz-1]);
+                StorageReference riversRef = mStorageRef.child(no + "/" + arr[sz - 1]);
                 Uri file = Uri.fromFile(new File(String.valueOf(pictureFile)));
 
                 riversRef.putFile(file)
@@ -1049,13 +1051,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // Get a URL to the uploaded content
-                                Log.d("successfully_upload","image uploaded successfully");
+                                Log.d("successfully_upload", "image uploaded successfully");
                                 File fdelete = new File(file_path);
                                 if (fdelete.exists()) {
                                     if (fdelete.delete()) {
-                                        Log.d("file_deleted","deletion successfully");
+                                        Log.d("file_deleted", "deletion successfully");
                                     } else {
-                                        Log.d("file_deleted","deletion filed");
+                                        Log.d("file_deleted", "deletion filed");
                                     }
                                 }
                             }
@@ -1064,7 +1066,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Handle unsuccessful uploads
-                                Log.d("successfully_upload","failed");
+                                Log.d("successfully_upload", "failed");
                             }
                         });
             } catch (FileNotFoundException e) {
@@ -1073,7 +1075,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
     };
-
 
 
     private static File getOutputMediaFile() {
@@ -1087,9 +1088,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 return null;
             }
             Log.d("MyCameraApp:", "success to create directory");
-        }
-        else
-        {
+        } else {
             Log.d("MyCameraApp:", "dir exist");
         }
         // Create a media file name
@@ -1098,8 +1097,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + timeStamp + ".jpg");
-
-
 
 
 //        Toast.makeText(getContext(),String.valueOf(mediaFile),Toast.LENGTH_LONG).show();
@@ -1118,7 +1115,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)  {
+                != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             return false;
         }
@@ -1193,8 +1190,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onSensorChanged(SensorEvent event) {
         WindowManager.LayoutParams params = getWindow().getAttributes();
-        if(event.values[0]==0){
-            if(!isIncomming || call.getState() == CallState.ESTABLISHED) {
+        if (event.values[0] == 0) {
+            if (!isIncomming || call.getState() == CallState.ESTABLISHED) {
                 params.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                 params.screenBrightness = 0;
                 getWindow().setAttributes(params);
@@ -1202,10 +1199,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Sinch_UiUtils.setFullscreen(this, true);
                 mCallingBlacksreen.setVisibility(View.VISIBLE);
             }
-        }else {
+        } else {
             params.screenBrightness = -1;
             getWindow().setAttributes(params);
-            Sinch_UiUtils.enableDisableViewGroup((ViewGroup)findViewById(R.id.calling_root).getParent(),true);
+            Sinch_UiUtils.enableDisableViewGroup((ViewGroup) findViewById(R.id.calling_root).getParent(), true);
             Sinch_UiUtils.setFullscreen(this, false);
             mCallingBlacksreen.setVisibility(View.GONE);
         }
@@ -1227,48 +1224,49 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mCallingReject.setText("END");
                 mCallingStatus.setText("ACTIVE CALL");
                 setBlinking(mCallingNotify, false);
-                if(r!=null)r.stop();
+                if (r != null) r.stop();
                 Sinch_UiUtils.setFullscreen(this, false);
                 break;
             case R.id.calling_reject:
-                Toast.makeText(this,"Prime contact denied to access your live mic",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Prime contact denied to access your live mic", Toast.LENGTH_LONG).show();
                 call.hangup();
-                if(r!=null)r.stop();
+                if (r != null) r.stop();
                 finish();
                 break;
         }
     }
 
     private void setBlinking(View object, boolean status) {
-        if(!status){
+        if (!status) {
             object.animate().cancel();
             return;
         }
-        ObjectAnimator anim= ObjectAnimator.ofFloat(object, View.ALPHA, 0.1f,1.0f);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(object, View.ALPHA, 0.1f, 1.0f);
         anim.setDuration(1000);
         anim.setRepeatMode(ValueAnimator.REVERSE);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.start();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSinchLogging(SinchStatus.SinchLogger sinchLogger){
-        if(sinchLogger.message.contains("terminationCause=DENIED")&&!isIncomming){
-            if(r!=null)r.stop();
+    public void onSinchLogging(SinchStatus.SinchLogger sinchLogger) {
+        if (sinchLogger.message.contains("terminationCause=DENIED") && !isIncomming) {
+            if (r != null) r.stop();
             call.hangup();
             Toast.makeText(this, "USER REJECTED", Toast.LENGTH_SHORT).show();
             finish();
-        }else if(sinchLogger.message.contains("onSessionEstablished")){
+        } else if (sinchLogger.message.contains("onSessionEstablished")) {
             mCallingStatus.setText("ACTIVE CALL");
-        }else if(sinchLogger.message.contains("onSessionTerminated")){
+        } else if (sinchLogger.message.contains("onSessionTerminated")) {
             call.hangup();
-            if(r!=null)r.stop();
-            if(sinchLogger.message.contains("terminationCause=NO_ANSWER")){
+            if (r != null) r.stop();
+            if (sinchLogger.message.contains("terminationCause=NO_ANSWER")) {
                 Toast.makeText(this, "NO ANSWER", Toast.LENGTH_SHORT).show();
-            }else if(sinchLogger.message.contains("terminationCause=TIMEOUT")){
+            } else if (sinchLogger.message.contains("terminationCause=TIMEOUT")) {
                 Toast.makeText(this, "TIMEOUT", Toast.LENGTH_SHORT).show();
-            }else if(sinchLogger.message.contains("terminationCause=CANCELED")){
+            } else if (sinchLogger.message.contains("terminationCause=CANCELED")) {
                 Notification n = new NotificationCompat.Builder(this, "calling").setContentTitle("Missed Call").setAutoCancel(true).setContentText("You have missed call from " + call.getRemoteUserId()).setSmallIcon(android.R.drawable.sym_call_missed).build();
-                NotificationManagerCompat.from(this).notify(1133,n);
+                NotificationManagerCompat.from(this).notify(1133, n);
             }
             finish();
         }
