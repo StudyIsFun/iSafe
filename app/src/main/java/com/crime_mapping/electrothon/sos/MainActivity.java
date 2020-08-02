@@ -560,7 +560,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         //write data to firebase
-
         if (lastLocationGpsProvider != null)
         {
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
