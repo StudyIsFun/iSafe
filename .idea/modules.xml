@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/VoiceCallApp.iml" filepath="$PROJECT_DIR$/VoiceCallApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/calling-master.iml" filepath="$PROJECT_DIR$/.idea/modules/calling-master.iml" group="calling-master" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" group="calling-master/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iSafe.iml" filepath="$PROJECT_DIR$/.idea/modules/iSafe.iml" group="iSafe" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iSafe-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iSafe-app.iml" group="iSafe/app" />
+    </modules>
+  </component>
+</project>
