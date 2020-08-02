@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="iSafe_SIH/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/iSafe-final.iml" filepath="$PROJECT_DIR$/.idea/modules/iSafe-final.iml" group="iSafe-final" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/iSafe-final-app.iml" group="iSafe-final/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/iSafe_SIH.iml" filepath="$PROJECT_DIR$/.idea/iSafe_SIH.iml" group="iSafe_SIH" />
+    </modules>
+  </component>
+</project>
