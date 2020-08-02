@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_colour">
+    android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/iv_dots"
         android:layout_width="0dp"
@@ -17,6 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/iv_space"
         android:layout_width="0dp"
@@ -29,8 +30,8 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="@id/iv_dots"
         app:layout_constraintStart_toStartOf="@id/iv_dots"
-        app:layout_constraintTop_toTopOf="@id/iv_dots"
-         />
+        app:layout_constraintTop_toTopOf="@id/iv_dots" />
+
     <TextView
         android:id="@+id/tvHeader"
         style="@style/HeaderText"
@@ -39,52 +40,56 @@
         android:layout_marginBottom="16dp"
         android:alpha="0.9"
         android:text="@string/enter_no"
-        android:textColor="@color/white"
+        android:textColor="#4B5092"
         app:layout_constraintBottom_toTopOf="@+id/tvBody"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline1"
         app:layout_constraintVertical_chainStyle="packed" />
+
     <TextView
         android:id="@+id/tvBody"
         style="@style/BodyText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/enter_no_body"
-        android:textColor="@color/white"
+        android:textColor="#4B5092"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/tvHeader"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvHeader"
         app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.33242133" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.66" />
+
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="80dp"
-        android:translationZ="4dp"
+        android:translationZ="8dp"
         app:cardCornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline2">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#E62D2E33">
+            android:layout_height="match_parent">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPhoneNumber"
@@ -102,15 +107,13 @@
                 app:layout_constraintTop_toTopOf="parent"
 
                 app:startIconTintMode="screen">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColorHint="@color/white"
+                    android:hint="Enter phone number"
                     android:inputType="number" />
-                android:hint="Enter phone number"
-                android:inputType="number"
-                android:textColorHint="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

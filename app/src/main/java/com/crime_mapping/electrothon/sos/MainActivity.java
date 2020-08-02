@@ -7,6 +7,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -62,6 +65,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -71,7 +75,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallState;
@@ -87,12 +93,17 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, View.OnClickListener, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, View.OnClickListener, SensorEventListener, EasyPermissions.PermissionCallbacks {
     private GoogleMap mMap;
     private String prime_id = null;
     private String phone_no;
@@ -155,10 +166,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String no;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private Camera mCamera;
+    String primeContact;
     //to store path of each image
     String file_path;
     private CameraPreview mCameraPreview;
     private StorageReference mStorageRef;
+    Uri file;
+    private StorageTask mUploadTask;
+    public static final int PERMISSION_CODE = 123;
+
+    private DatabaseReference mDatabaseRef;
 
 
     //mic variable
@@ -231,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
         no = preferences.getString("PHN", "");
+        primeContact = preferences.getString("PrimeContact", "");
+
 
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
@@ -244,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .findFragmentById(R.id.mapp);
         mapFragment.getMapAsync(this);
 
+        /*
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 //            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
 
@@ -258,6 +278,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } else {
             requestCallPhonePermission();
         }
+
+         */
+
 
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -403,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         //for camera things
+        /*
         if (checkPermission()) {
 //            setContentView(R.layout.activity_main);
             mCamera = getCameraInstance();
@@ -429,6 +453,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             requestPermission();
         }
 
+         */
+
+        RequestPermission();
+    }
+
+    @AfterPermissionGranted(PERMISSION_CODE)
+    private void RequestPermission() {
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CALL_PHONE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            //  Toast.makeText(this, "Opening camera", Toast.LENGTH_SHORT).show();
+            CameraPrev();
+        } else {
+            EasyPermissions.requestPermissions(this, "We need permissions because this and that",
+                    PERMISSION_CODE, perms);
+        }
+    }
+
+    private void CameraPrev() {
+        mCamera = getCameraInstance();
+        mCameraPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mCameraPreview);
     }
 
 
@@ -1042,10 +1088,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 String[] arr = file_path.split("/");
                 int sz = arr.length;
                 Log.d("image_id", arr[sz - 1]);
-                StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
-                StorageReference riversRef = mStorageRef.child(no + "/" + arr[sz - 1]);
-                Uri file = Uri.fromFile(new File(String.valueOf(pictureFile)));
+                //  StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
+                //   StorageReference riversRef = mStorageRef.child(no + "/" + arr[sz - 1]);
+                file = Uri.fromFile(new File(String.valueOf(pictureFile)));
+                Log.e("uri", "" + file);
 
+                /*
                 riversRef.putFile(file)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -1069,12 +1117,71 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                 Log.d("successfully_upload", "failed");
                             }
                         });
+                */
+
+                mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads").child(primeContact);
+                mStorageRef = FirebaseStorage.getInstance().getReference("uploads").child(primeContact);
+                UploadImage();
             } catch (FileNotFoundException e) {
 
             } catch (IOException e) {
             }
         }
+
+
     };
+
+    private void UploadImage() {
+        if (file != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(file));
+            mUploadTask = fileReference.putFile(file)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            if (taskSnapshot.getMetadata() != null) {
+                                if (taskSnapshot.getMetadata().getReference() != null) {
+                                    Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                    result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String imageUrl = uri.toString();
+                                            String uploadId = mDatabaseRef.push().getKey();
+                                            mDatabaseRef.child(uploadId).setValue(imageUrl);
+                                        }
+                                    });
+                                }
+                            }
+                            Toast.makeText(MainActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+                            //   Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            Toast.makeText(MainActivity.this, "Progress" + progress, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getFileExtension(Uri file) {
+
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(file));
+
+    }
 
 
     private static File getOutputMediaFile() {
@@ -1082,6 +1189,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "iSafe");
+        mediaStorageDir.mkdirs();
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp:", "failed to create directory");
@@ -1137,6 +1245,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        /*
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -1176,6 +1285,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Toast.makeText(this, "CALL PHONE Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
+
+         */
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
@@ -1269,6 +1381,49 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 NotificationManagerCompat.from(this).notify(1133, n);
             }
             finish();
+        }
+    }
+
+    public void Image_Shared(View view) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("uploads");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild(no)) {
+
+                    Intent intent = new Intent(MainActivity.this, ImagesActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        /*
+        if (flag) {
+            Intent intent = new Intent(MainActivity.this, AllContacts.class);
+            intent.putExtra("ImageIntent", true);
+            startActivity(intent);
+        }
+
+         */
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
         }
     }
 }
