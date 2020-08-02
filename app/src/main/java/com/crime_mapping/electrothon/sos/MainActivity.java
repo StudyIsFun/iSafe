@@ -37,6 +37,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //    static {
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 //    }
-    private ToggleButton togglebutton1, togglebutton;
+    private Switch togglebutton1, togglebutton;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseuser;
     FirebaseDatabase database;
@@ -238,12 +239,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        tv = findViewById(R.id.textView);
-        b = findViewById(R.id.button);
+        setContentView(R.layout.activity_home_screen);
+        b = findViewById(R.id.btnService);
         startService(new Intent(this, SinchService.class));
-        togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
-        togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton);
+        togglebutton = (Switch) findViewById(R.id.switch1);
+        togglebutton1 = (Switch) findViewById(R.id.switch2);
 
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
         number = preferencess.getString("PHN", "");
-        initView();
+      //  initView();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 

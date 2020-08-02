@@ -9,6 +9,6 @@ public class Demo extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prime_contact);
+        setContentView(R.layout.activity_home_screen);
     }
 }

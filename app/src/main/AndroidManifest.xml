@@ -68,7 +68,7 @@
             android:label="@string/title_activity_maps2" />
         <activity android:name=".update_spot" />
         <activity android:name=".Login" />
-        <activity android:name=".Demo">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
