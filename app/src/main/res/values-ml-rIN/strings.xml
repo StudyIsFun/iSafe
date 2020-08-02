@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_incomming_call">IncommingCallActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!--    <string name="google_maps_key">AIzaSyAqYjoLrmjVFyB-A_Oihv8AiYUex603XKk</string>-->
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">CodeBusters</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="app_name">iSafe</string>
+    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">പുതിയ സന്ദേശ അറിയിപ്പുകൾ</string>
+    <string name="pref_title_ringtone">റിംഗ്‌ടോൺ</string>
+    <string name="pref_ringtone_silent">നിശബ്ദത</string>
+    <string name="pref_title_vibrate">വൈബ്രേറ്റ് ചെയ്യുക</string>
+    <string name="title_activity_maps2">മാപ്പ്</string>
+    <string name="title_activity_maps3">മാപ്പ്</string>
+    <string name="title_activity_maps4">മാപ്പ്</string>
+    <string name="verify_code">പരിശോധിച്ചുറപ്പിക്കൽ കോഡ്</string>
+    <string name="verify_code_content">നിങ്ങളുടെ മൊബൈലിലേക്ക് അയച്ച ആറ് അക്ക സ്ഥിരീകരണ കോഡ് നൽകുക.</string>
+    <string name="enter_no">മൊബൈൽ പരിശോധന</string>
+    <string name="enter_no_body">ഒരു സ്ഥിരീകരണ കോഡ് ലഭിക്കുന്നതിന് നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക.</string>
+    <string name="next">അടുത്തത്</string>
+    <string name="contact">ബന്ധപ്പെടേണ്ട നമ്പർ</string>
+    <string name="verify">പരിശോധിക്കുക</string>
+    <string name="about">കുറിച്ച്</string>
+    <string name="settings">ക്രമീകരണങ്ങൾ</string>
+    <string name="help">സഹായിക്കൂ</string>
+    <string name="edit_profile">പ്രൊഫൈൽ എഡിറ്റുചെയ്യുക</string>
+    <string name="profile">പ്രൊഫൈൽ</string>
+    <string name="welcome">സ്വാഗതം</string>
+    <string name="show_sos">Google മാപ്‌സിലെ അവസാന സ്ഥാനം പരിശോധിക്കാൻ ഉപയോക്താവിൽ ക്ലിക്കുചെയ്യുക</string>
+    <string name="send_sos">"അടിയന്തിര സാഹചര്യങ്ങളിൽ നിങ്ങളുടെ സ്ഥാനം പ്രക്ഷേപണം ചെയ്യുന്നതിന് ബട്ടൺ അമർത്തുക"</string>
+    <string name="area_nearme">എനിക്ക് ചുറ്റുമുള്ള സുരക്ഷിതമല്ലാത്ത പ്രദേശങ്ങൾ</string>
+    <string name="find_routes">റൂട്ടുകൾ കണ്ടെത്തുക</string>
+    <string name="mark_spot">സ്ഥാനം ക്രൈം സ്പോട്ടായി അടയാളപ്പെടുത്തുക</string>
+    <string name="share_loc">തത്സമയ ലൊക്കേഷൻ പങ്കിടുക</string>
+    <string name="shared_loc_with_me">ലൊക്കേഷൻ നിങ്ങളുമായി പങ്കിട്ടു</string>
+    <string name="share_live_cam">തത്സമയ ക്യാമറ പങ്കിടുക  </string>
+    <string name="share_live_mic">തത്സമയ മൈക്രോഫോൺ പങ്കിടുക</string>
+    <string name="start_stop_services">പശ്ചാത്തല സേവനം നിർത്തുക</string>
+    <string name="ur_location">നിങ്ങളുടെ നിലവിലെ സ്ഥാനം</string>
+    <string name="fetching_loc">നിങ്ങളുടെ സ്ഥാനം നേടുന്നു ...</string>
+    <string name="profile_details">പ്രൊഫൈൽ വിശദാംശങ്ങൾ</string>
+    <string name="ur_name">നിങ്ങളുടെ പേര് നൽകുക</string>
+    <string name="ur_phone">നിങ്ങളുടെ ഫോൺ നമ്പർ</string>
+    <string name="ur_blood_grp">നിങ്ങളുടെ ബ്ലഡ് ഗ്രൂപ്പ് നൽകുക</string>
+    <string name="submit">സമർപ്പിക്കുക</string>
+    <string name="update_prime">പ്രധാന കോൺടാക്റ്റ് അപ്‌ഡേറ്റുചെയ്യുക</string>
+    <string name="user_id">യൂസർ ഐഡി</string>
+    <string name="password">password</string>
+    <string name="crime">അപകട വിശദാംശങ്ങൾ നൽകുക</string>
+    <string name="feed_with_loc">നിങ്ങളുടെ ലൊക്കേഷൻ ഉപയോഗിച്ച് ഫീഡ് ചെയ്യുക</string>
+    <string name="feed_with_custom">ഫീഡ് തിരഞ്ഞെടുത്ത സ്ഥാനം</string>
+    <string name="get_code">കോഡ് നേടു</string>
+    <string name="answer">ഉത്തരം</string>
+    <string name="reject">നിരസിക്കുക</string>
+    <string name="change_lang">ഭാഷ തിരഞ്ഞെടുക്കുക</string>
+    <string name="user_details">Registration details</string>
+</resources>

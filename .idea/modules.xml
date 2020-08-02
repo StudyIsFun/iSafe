@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="iSafe_SIH/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/iSafe_SIH.iml" filepath="$PROJECT_DIR$/.idea/iSafe_SIH.iml" group="iSafe_SIH" />
+      <module fileurl="file://$PROJECT_DIR$/VoiceCallApp.iml" filepath="$PROJECT_DIR$/VoiceCallApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/calling-master.iml" filepath="$PROJECT_DIR$/.idea/modules/calling-master.iml" group="calling-master" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/calling-master-app.iml" group="calling-master/app" />
+
     </modules>
   </component>
 </project>

@@ -3,12 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.crime_mapping.electrothon.sos"
-<<<<<<< HEAD
-        minSdkVersion 26
-=======
+        applicationId "com.crime_mapping.sih2020.sos"
+
         minSdkVersion 16
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -30,14 +27,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation 'androidx.appcompat:appcompat:1.0.0'
-<<<<<<< HEAD
+
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
 
-=======
->>>>>>> 014d818825fd94f700009be5c4b7fbb651b44e81
     implementation(name: 'sinch-android-rtc', version: '+', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
@@ -79,7 +74,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0-alpha01'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
-
+    implementation 'com.google.maps.android:android-maps-utils:2.0.3'
 //    implementation 'androidx.appcompat:appcompat:1.0.0'
 //    implementation(name: 'sinch-android-rtc', version: '+', ext: 'aar')
 //    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -87,6 +82,7 @@ dependencies {
 //    implementation 'org.greenrobot:eventbus:3.1.1'
 //    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
 
 
 }
