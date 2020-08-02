@@ -4,10 +4,14 @@ import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -21,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -31,7 +36,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -59,13 +74,20 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
     Retrofit retrofit;
-
+    SearchView start, end;
+    LatLng latLngStart;
+    LatLng latLngEnd;
+    private final static int MY_PERMISSIONS_REQUEST = 32;
+    double lat1, lon1, lat2, lon2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps3);
+        setContentView(R.layout.activity_map2);
+        start = findViewById(R.id.searchStart);
+        end = findViewById(R.id.searchDestination);
 
+        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         preferences = getSharedPreferences("App", MODE_PRIVATE);
         editor = preferences.edit();
 
@@ -84,9 +106,7 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
 //                    .findFragmentById(R.id.map);
             listpoints = new ArrayList<LatLng>();
             getDirection = findViewById(R.id.btnGetDirection);
-            MapFragment mapFragment = (MapFragment) getFragmentManager()
-                    .findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+
 
 //    getDirection.setOnClickListener(new View.OnClickListener() {
 //        @Override
@@ -98,6 +118,102 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
         }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.google_map);
+        mapFragment.getMapAsync(this);
+
+
+        start.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = start.getQuery().toString();
+                List<Address> addressList = null;
+                if (location != null || !location.equals("")) {
+                    Geocoder geocoder = new Geocoder(MapsActivity3.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Address address = addressList.get(0);
+                    lat1 = address.getLatitude();
+                    lon1 = address.getLongitude();
+                    latLngStart = new LatLng(address.getLatitude(), address.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLngStart).title(location));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngStart, 14));
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+        end.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = end.getQuery().toString();
+                List<Address> addressList = null;
+                if (location != null || !location.equals("")) {
+                    Geocoder geocoder = new Geocoder(MapsActivity3.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Address address = addressList.get(0);
+                    lat2 = address.getLatitude();
+                    lon2 = address.getLongitude();
+                    latLngEnd = new LatLng(address.getLatitude(), address.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLngEnd).title(location));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngEnd, 14));
+                    new TaskDirectionRequest().execute(buildRequestUrl(latLngStart, latLngEnd));
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        /*
+        end.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = start.getQuery().toString();
+                List<Address> addressList = null;
+                if (location != null || !location.equals("")) {
+                    Geocoder geocoder = new Geocoder(MapsActivity3.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Address address = addressList.get(0);
+                    latLngEnd = new LatLng(address.getLatitude(), address.getLongitude());
+                    Log.e("endpoint", "" + latLngEnd);
+                    mMap.addMarker(new MarkerOptions().position(latLngEnd).title(location));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngEnd, 14));
+
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+         */
 
     }
 
@@ -174,6 +290,7 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
         });
 
 //        mMap.addCircle(new CircleOptions().radius(20).strokeColor(Color.argb(30,200,0,0)).strokeWidth(2f).fillColor(0x30ff0000));
+        //
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -227,6 +344,127 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
          */
 
 
+    }
+
+    private String buildRequestUrl(LatLng origin, LatLng destination) {
+        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
+        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
+        String output = "json";
+        String APIKEY = getResources().getString(R.string.google_maps_key);
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=" + APIKEY;
+        Log.d("TAG", url);
+        return url;
+    }
+
+    private String requestDirection(String requestedUrl) {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(requestedUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        httpURLConnection.disconnect();
+        return responseString;
+    }
+
+    public class TaskDirectionRequest extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String responseString = "";
+            try {
+                responseString = requestDirection(strings[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String responseString) {
+            super.onPostExecute(responseString);
+            //Json object parsing
+            TaskParseDirection parseResult = new TaskParseDirection();
+            parseResult.execute(responseString);
+        }
+    }
+
+    public class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
+            List<List<HashMap<String, String>>> routes = null;
+            JSONObject jsonObject = null;
+
+            try {
+                jsonObject = new JSONObject(jsonString[0]);
+                DirectionParser parser = new DirectionParser();
+                routes = parser.parse(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+            super.onPostExecute(lists);
+            ArrayList points = null;
+            PolylineOptions polylineOptions = null;
+
+            for (List<HashMap<String, String>> path : lists) {
+                points = new ArrayList();
+                polylineOptions = new PolylineOptions();
+
+                for (HashMap<String, String> point : path) {
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lon = Double.parseDouble(point.get("lng"));
+
+                    points.add(new LatLng(lat, lon));
+                }
+                polylineOptions.addAll(points);
+                polylineOptions.width(15f);
+                polylineOptions.color(Color.BLUE);
+                polylineOptions.geodesic(true);
+            }
+            if (polylineOptions != null) {
+                mMap.addPolyline(polylineOptions);
+                ApiCall();
+            } else {
+                Toast.makeText(getApplicationContext(), "Direction not found", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void ApiCall() {
         OkHttpClient.Builder okhttpbuilder = new OkHttpClient.Builder();
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -239,15 +477,19 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
         retrofit = builder.build();
 
         SihApi sihApi = retrofit.create(SihApi.class);
-        Call<RouteResponse> call = sihApi.getRoutes("31.708508", "76.527356", "31.689422", "76.519561");
+        Call<RouteResponse> call = sihApi.getRoutes(String.valueOf(lat1), String.valueOf(lon1), String.valueOf(lat2), String.valueOf(lon2));
         call.enqueue(new Callback<RouteResponse>() {
             @Override
             public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
                 if (response.isSuccessful()) {
                     Data[] data = response.body().getData();
-                    Log.e(TAG, "" + data);
+
+                    Log.e(TAG, "" + data.length);
+
                     for (Data data1 : data) {
+
                         LatLng point = new LatLng(data1.getX(), data1.getY());
+                        Log.e("mapsactivity3", "" + data1.getX() + "" + data1.getY());
                         Circle circle = mMap.addCircle(new CircleOptions()
                                 .center(point).radius(20)
                                 .strokeColor(Color.BLUE)
@@ -265,7 +507,19 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
                 Log.e(TAG, "" + t.getMessage());
             }
         });
+    }
 
+    /**
+     * Request app permission for API 23/ Android 6.0
+     *
+     * @param permission
+     */
+    private void requestPermission(String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permission},
+                    MY_PERMISSIONS_REQUEST);
+        }
     }
 
 }
