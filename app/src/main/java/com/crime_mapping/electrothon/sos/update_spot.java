@@ -1,8 +1,8 @@
 package com.crime_mapping.electrothon.sos;
 
+
+
 import android.Manifest;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,23 +12,21 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.MotionEvent;
 
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+
 import com.crime_mapping.electrothon.sos.api.ApiClient;
 import com.crime_mapping.electrothon.sos.api.ApiInterface;
 import com.crime_mapping.electrothon.sos.api.Crime;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
@@ -42,35 +40,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.firebase.database.DatabaseReference;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-public class update_spot extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback {
-    private EditText e1, e2, e3;
+public class update_spot extends FragmentActivity implements  GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback{
+    private EditText e1, e2,e3;
     private Button b1;
     private GoogleMap mMap;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     protected Context context;
     TextView txtLat;
-    int no_user = 0;
+    int no_user=0;
     String lat;
     DatabaseReference user_no;
     String provider;
-    String latti, longgi;
-    Retrofit retrofit;
-    String details;
+    String latti,longgi;
 
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
@@ -82,9 +68,8 @@ public class update_spot extends FragmentActivity implements GoogleApiClient.Con
         e1 = (EditText) findViewById(R.id.id);
         e2 = (EditText) findViewById(R.id.pswd);
         b1 = (Button) findViewById(R.id.submit);
-        e3 = (EditText) findViewById(R.id.detail);
+        e3 = (EditText)findViewById(R.id.detail);
 
-        details = e3.getText().toString();
         Intent intentt = getIntent();
         latti = intentt.getStringExtra("latti");
         longgi = intentt.getStringExtra("longgi");
@@ -99,10 +84,14 @@ public class update_spot extends FragmentActivity implements GoogleApiClient.Con
     public void submit(View view) {
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
-        if (s1.equals("risi") && s2.equals("risi")) {
+        if(s1.equals("risi") && s2.equals("risi"))
+        {
+
             push();
+
         }
     }
+
 
 
     @Override
@@ -112,14 +101,17 @@ public class update_spot extends FragmentActivity implements GoogleApiClient.Con
     }
 
 
+
     public void custom_submit(View view) {
 
 //        Toast.makeText(this,"Latti : "+latti+" Longi : "+longgi,Toast.LENGTH_LONG).show();
         String s1 = e1.getText().toString();
         String s2 = e2.getText().toString();
-        if (s1.equals("risi") && s2.equals("risi")) {
+        if(s1.equals("risi") && s2.equals("risi"))
+        {
             push();
         }
+
     }
 
     @Override
@@ -171,53 +163,28 @@ public class update_spot extends FragmentActivity implements GoogleApiClient.Con
 
     }
 
-    void push() {
-        System.out.println("latti is " + latti);
-        System.out.println("longgi is " + longgi);
+    void push()
+    {
+        if(latti!=null && longgi != null) {
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            Call<Crime> calllatest;
+            calllatest = apiInterface.pushcrime(String.valueOf(latti), String.valueOf(longgi), e3.getText().toString());
+            calllatest.enqueue(new Callback<Crime>() {
+                @Override
+                public void onResponse(Call<Crime> call, Response<Crime> response) {
+                    Log.e("call", call.request().url().toString());
+                    Log.e("responnse", String.valueOf(response));
 
-
-        OkHttpClient.Builder okhttpbuilder = new OkHttpClient.Builder();
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okhttpbuilder.addInterceptor(logging);
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://sihapi--psproject.repl.co/")
-                .addConverterFactory(GsonConverterFactory.create());
-
-        retrofit = builder.build();
-
-        SihApi sihApi = retrofit.create(SihApi.class);
-
-//        Post post = new Post(latti, longgi, details);
-
-        Post post = new Post(latti, longgi, details);
-
-        String url = "http://sihapi--psproject.repl.co/" + "crime?" + "lat=" + latti + "&long=" + longgi + "&crime=new";
-        Log.e("url", "" + url);
-        Call<Post> call = sihApi.sendPosts("application/json", latti, longgi, "new");
-
-        call.enqueue(new Callback<Post>() {
-            @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
-                Log.e("code", "" + response.code());
-                if (response.isSuccessful()) {
-                    Log.e("update_spot", "" + response.body());
                 }
-                // Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
-            }
 
-//            @Override
-//            public void onFailure(Call<Post> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
-//            }
+                @Override
+                public void onFailure(Call<Crime> call, Throwable t) {
 
-
-            @Override
-            public void onFailure(Call<Post> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
+                }
+            });
+        }
     }
 
+
 }
+

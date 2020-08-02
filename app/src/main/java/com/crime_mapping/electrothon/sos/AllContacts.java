@@ -47,25 +47,27 @@ public class AllContacts extends AppCompatActivity {
         editor = preferences.edit();
         final String no = preferences.getString("PHN", "");
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(no);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(no)) {
+                if (dataSnapshot.exists()) {
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                     for(DataSnapshot shot: snapshot.getChildren())  {
-                         Log.e("contact",""+shot.getKey());
-
-                         contactModels.add(new ContactModel(""+dataSnapshot.child(no).child(shot.getKey()).child("Name").getValue().toString(),""+shot.getKey()));
-                     }
+                        Log.d("responsess",String.valueOf(snapshot.getKey()));
+                        contactModels.add(new ContactModel(snapshot.child("Name").getValue().toString(),String.valueOf(snapshot.getKey()),snapshot.child("Latitude").getValue().toString(),snapshot.child("Longitude").getValue().toString()));
+//                        for(DataSnapshot shot: snapshot.getChildren())  {
+//                         Log.e("contact",""+shot.getKey());
+//
+//                         contactModels.add(new ContactModel(""+dataSnapshot.child(no).child(shot.getKey()).child("Name").getValue().toString(),""+shot.getKey()));
+//                     }
 
                       //  Log.e("name",""+name);
                       //
                         //   contactModels.add(new ContactModel(dataSnapshot.child(no).child(contact).child("Name").getValue().toString(), contact));
                     }
-                    Log.e("path", "" + dataSnapshot.child(no).child("9988776655").child("Latitude").getValue().toString());
+//                    Log.e("path", "" + dataSnapshot.child(no).child("9988776655").child("Latitude").getValue().toString());
                     //lat = Double.valueOf(dataSnapshot.child(contact).child("Latitude").getValue().toString());
                     // lon = Double.valueOf(dataSnapshot.child(contact).child("Longitude").getValue().toString());
                     //  GoToMap();

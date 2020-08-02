@@ -16,4 +16,11 @@ public interface ApiInterface {
 
     );
 
+    @GET("sos")
+    Call<SOSData> send_sos(
+            @Query("lat") String lat,
+            @Query("long") String longg,
+            @Query("phone") String phone
+    );
+
 }

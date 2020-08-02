@@ -87,10 +87,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     implementation 'com.google.maps.android:android-maps-utils:2.0.3'
+
+    //retrieval
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.airbnb.android:lottie:3.4.0'
-
 
 }
 apply plugin: 'com.google.gms.google-services'

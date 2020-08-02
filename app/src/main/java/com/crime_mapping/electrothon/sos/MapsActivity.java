@@ -1,13 +1,16 @@
 package com.crime_mapping.electrothon.sos;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -52,25 +55,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         editor = preferences.edit();
         final String no = preferences.getString("PHN", "");
         Log.d("number", "" + preferences.getString("PHN", ""));
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared");
+
 
         Intent intent = getIntent();
         NoShared = intent.getStringExtra("ContactNo");
-        Log.e("MapsActivity",""+NoShared);
+        Log.e("MapsActivity", "" + NoShared);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(no).child(NoShared);
 
-        /*
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChild(no)) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        contact = snapshot.getKey();
-                        if (contact.equals(NoShared)) {
-                            l1 = Double.valueOf(dataSnapshot.child(no).child("" + contact).child("Latitude").getValue().toString());
-                            l2 = Double.valueOf(dataSnapshot.child(no).child("" + contact).child("Longitude").getValue().toString());
-                        }
-                    }
+                if (dataSnapshot.exists()) {
+
+                    l1 = Double.valueOf(dataSnapshot.child("Latitude").getValue().toString());
+                    l2 = Double.valueOf(dataSnapshot.child("Longitude").getValue().toString());
+                    LatLng latLng = new LatLng(l1, l2);
+                    Log.e("ltlng", "" + l1 + "  " + l2);
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                    mMap.addMarker(markerOptions);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+                    mMap.animateCamera(cameraUpdate);
 
                 } else {
                     Toast.makeText(MapsActivity.this, "No user have shared location with you.", Toast.LENGTH_SHORT).show();
@@ -84,7 +89,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-         */
 
     }
 
@@ -102,15 +106,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
         // Add a marker in Sydney and move the camera
 
-        LatLng latLng = new LatLng(l1, l2);
-        Log.e("ltlng", "" + l1 + "  " + l2);
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-        mMap.addMarker(markerOptions);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
-        mMap.animateCamera(cameraUpdate);
+//        LatLng latLng = new LatLng(l1, l2);
+//        Log.e("ltlng", "" + l1 + "  " + l2);
+//        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+//        mMap.addMarker(markerOptions);
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+//        mMap.animateCamera(cameraUpdate);
 
     }
 }

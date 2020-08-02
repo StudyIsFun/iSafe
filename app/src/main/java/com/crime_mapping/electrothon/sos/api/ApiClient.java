@@ -15,16 +15,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     public static final String BASE_URL = "https://sihapi--psproject.repl.co/";
-    public static Retrofit retrofit;
+    public static Retrofit retrofit1,retrofit2;
     public static Retrofit getApiClient(){
-        if (retrofit == null){
+        if (retrofit1 == null){
 
-            retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
+            retrofit1 = new Retrofit.Builder().baseUrl(BASE_URL)
                     .client(getUnsafeOkHttpClient().build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
-        return retrofit;
+        return retrofit1;
+    }
+
+    public static Retrofit getApiClient1(){
+        if (retrofit2 == null){
+
+            retrofit2 = new Retrofit.Builder().baseUrl(BASE_URL)
+                    .client(getUnsafeOkHttpClient().build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofit2;
     }
 
 
