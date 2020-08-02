@@ -7,6 +7,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,7 +26,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -37,7 +37,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -51,6 +50,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.crime_mapping.electrothon.sos.api.ApiClient;
+import com.crime_mapping.electrothon.sos.api.ApiInterface;
+import com.crime_mapping.electrothon.sos.api.Crime;
+import com.crime_mapping.electrothon.sos.api.SOSData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -93,6 +96,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -101,6 +105,8 @@ import java.util.TimerTask;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //    static {
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 //    }
-    private Switch togglebutton1, togglebutton;
+    private ToggleButton togglebutton1, togglebutton;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseuser;
     FirebaseDatabase database;
@@ -178,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private DatabaseReference mDatabaseRef;
 
-
     //mic variable
     private String number;
     private TextView mCallingStatus;
@@ -194,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Sensor mProximity;
     private View mCallingBlacksreen;
     boolean flag = false;
-
+    String idd;
 
     @Override
     protected void onStart() {
@@ -238,23 +243,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
-        b = findViewById(R.id.btnService);
+        setContentView(R.layout.activity_main);
+        tv = findViewById(R.id.textView);
+        b = findViewById(R.id.button);
         startService(new Intent(this, SinchService.class));
-        togglebutton = (Switch) findViewById(R.id.switch1);
-        togglebutton1 = (Switch) findViewById(R.id.switch2);
+        togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
+        togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton);
 
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
         no = preferences.getString("PHN", "");
         primeContact = preferences.getString("PrimeContact", "");
 
-
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
         number = preferencess.getString("PHN", "");
-      //  initView();
+        initView();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
@@ -263,24 +269,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .findFragmentById(R.id.mapp);
         mapFragment.getMapAsync(this);
 
-        /*
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-//            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
-
-        } else {
-
-            requestRecordAudioPermission();
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-
-//            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
-        } else {
-            requestCallPhonePermission();
-        }
-
-         */
-
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+////            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
+//
+//        } else {
+//
+//            requestRecordAudioPermission();
+//        }
+//
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+//
+////            Toast.makeText(this, "You have already granted this permission", Toast.LENGTH_SHORT).show();
+//        } else {
+//            requestCallPhonePermission();
+//        }
 
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -426,13 +428,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         //for camera things
-        /*
-        if (checkPermission()) {
+//        if (checkPermission()) {
 //            setContentView(R.layout.activity_main);
-            mCamera = getCameraInstance();
-            mCameraPreview = new CameraPreview(this, mCamera);
-            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-            preview.addView(mCameraPreview);
+//            mCamera = getCameraInstance();
+//            mCameraPreview = new CameraPreview(this, mCamera);
+//            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+//            preview.addView(mCameraPreview);
 
 //            Button captureButton = (Button) findViewById(R.id.button_capture);
 //            captureButton.setOnClickListener(new View.OnClickListener() {
@@ -449,33 +450,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //                    }, 0, 5000);
 //                }
 //            });
-        } else {
+//        } else {
             requestPermission();
         }
-
-         */
-
-        RequestPermission();
-    }
-
-    @AfterPermissionGranted(PERMISSION_CODE)
-    private void RequestPermission() {
-        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CALL_PHONE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            //  Toast.makeText(this, "Opening camera", Toast.LENGTH_SHORT).show();
-            CameraPrev();
-        } else {
-            EasyPermissions.requestPermissions(this, "We need permissions because this and that",
-                    PERMISSION_CODE, perms);
+//        requestPermission();}
+        @AfterPermissionGranted(PERMISSION_CODE)
+        private void RequestPermission() {
+            String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CALL_PHONE};
+            if (EasyPermissions.hasPermissions(this, perms)) {
+                //  Toast.makeText(this, "Opening camera", Toast.LENGTH_SHORT).show();
+                CameraPrev();
+            } else {
+                EasyPermissions.requestPermissions(this, "We need permissions because this and that",
+                        PERMISSION_CODE, perms);
+            }
         }
-    }
 
-    private void CameraPrev() {
-        mCamera = getCameraInstance();
-        mCameraPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mCameraPreview);
-    }
+        private void CameraPrev() {
+            mCamera = getCameraInstance();
+            mCameraPreview = new CameraPreview(this, mCamera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mCameraPreview);
+        }
 
 
     //camera section begins here
@@ -566,11 +562,75 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //write data to firebase
 
         if (lastLocationGpsProvider != null)
-            updateUserLocationToFirebase(lastLocationGpsProvider);
+        {
+            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+            retrofit2.Call<SOSData> calllatest;
+            calllatest = apiInterface.send_sos(String.valueOf(lastLocationGpsProvider.getLatitude()), String.valueOf(lastLocationGpsProvider.getLongitude()), no);
+            calllatest.enqueue(new Callback<SOSData>() {
+                @Override
+                public void onResponse(retrofit2.Call<SOSData> call, Response<SOSData> response) {
+                    List<String> adslist = response.body().getNearby();
+                    if(adslist.size()>0) {
+                        idd = adslist.get(0);
+                    }
+//
+                    Toast.makeText(MainActivity.this,"SOS sent successfully on "+response.body().getNearby().toString(),Toast.LENGTH_LONG).show();
+                    Log.e("callljng",response.body().getNearby().toString());
+                    Log.e("responnse", String.valueOf(response));
+                    Log.d("notified","alert");
+//                    Toast.makeText(MainActivity.this,"SOS sent successfully",Toast.LENGTH_LONG).show();
+
+
+                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    if (!mBluetoothAdapter.isEnabled()){
+                        mBluetoothAdapter.enable();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<SOSData> call, Throwable t) {
+
+                }
+            });
+//            updateUserLocationToFirebase(lastLocationGpsProvider);
+        }
+
         else {
             lastLocationGpsProvider = LocationServices.FusedLocationApi.getLastLocation(gac);
             if (lastLocationGpsProvider != null)
-                updateUserLocationToFirebase(lastLocationGpsProvider);
+            {
+                ApiInterface apiInterface = ApiClient.getApiClient1().create(ApiInterface.class);
+                retrofit2.Call<SOSData> calllatest;
+                calllatest = apiInterface.send_sos(String.valueOf(lastLocationGpsProvider.getLatitude()), String.valueOf(lastLocationGpsProvider.getLongitude()), no);
+                calllatest.enqueue(new Callback<SOSData>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<SOSData> call, Response<SOSData> response) {
+                        List<String> adslist = response.body().getNearby();
+                        if(adslist.size()>0) {
+                            idd = adslist.get(0);
+                        }
+                        Toast.makeText(MainActivity.this,"SOS sent successfully on "+response.body().getNearby().toString(),Toast.LENGTH_LONG).show();
+                        Log.e("callljng",response.body().getNearby().toString());
+                        Log.e("responnse", String.valueOf(response));
+                        Log.d("notified","alert");
+//                        Toast.makeText(MainActivity.this,"SOS sent successfully",Toast.LENGTH_LONG).show();
+
+
+                        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (!mBluetoothAdapter.isEnabled()){
+                            mBluetoothAdapter.enable();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<SOSData> call, Throwable t) {
+
+                    }
+                });
+            }
+//                updateUserLocationToFirebase(lastLocationGpsProvider);
         }
 
 
@@ -780,6 +840,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                  */
                 if (dataSnapshot.hasChild(no)) {
                     flag = true;
+                    Intent intent = new Intent(MainActivity.this, AllContacts.class);
+                    startActivity(intent);
                 }
               /*
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -795,10 +857,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         });
 
-        if (flag) {
-            Intent intent = new Intent(MainActivity.this, AllContacts.class);
-            startActivity(intent);
-        }
+//        if (flag) {
+//            Intent intent = new Intent(MainActivity.this, AllContacts.class);
+//            startActivity(intent);
+//        }
     }
 
 
@@ -1088,37 +1150,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 String[] arr = file_path.split("/");
                 int sz = arr.length;
                 Log.d("image_id", arr[sz - 1]);
-                //  StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
-                //   StorageReference riversRef = mStorageRef.child(no + "/" + arr[sz - 1]);
+//                StorageReference mStorageRef = FirebaseStorage.getInstance("gs://crime1.appspot.com").getReference();
+//                StorageReference riversRef = mStorageRef.child(no + "/" + arr[sz - 1]);
+//                Uri file = Uri.fromFile(new File(String.valueOf(pictureFile)));
+
                 file = Uri.fromFile(new File(String.valueOf(pictureFile)));
                 Log.e("uri", "" + file);
 
-                /*
-                riversRef.putFile(file)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                // Get a URL to the uploaded content
-                                Log.d("successfully_upload", "image uploaded successfully");
-                                File fdelete = new File(file_path);
-                                if (fdelete.exists()) {
-                                    if (fdelete.delete()) {
-                                        Log.d("file_deleted", "deletion successfully");
-                                    } else {
-                                        Log.d("file_deleted", "deletion filed");
-                                    }
-                                }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                                Log.d("successfully_upload", "failed");
-                            }
-                        });
-                */
-
+//                riversRef.putFile(file)
+//                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                // Get a URL to the uploaded content
+//                                Log.d("successfully_upload", "image uploaded successfully");
+//                                File fdelete = new File(file_path);
+//                                if (fdelete.exists()) {
+//                                    if (fdelete.delete()) {
+//                                        Log.d("file_deleted", "deletion successfully");
+//                                    } else {
+//                                        Log.d("file_deleted", "deletion filed");
+//                                    }
+//                                }
+//                            }
+//                        })
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception exception) {
+//                                // Handle unsuccessful uploads
+//                                Log.d("successfully_upload", "failed");
+//                            }
+//                        });
                 mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads").child(primeContact);
                 mStorageRef = FirebaseStorage.getInstance().getReference("uploads").child(primeContact);
                 UploadImage();
@@ -1127,8 +1188,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } catch (IOException e) {
             }
         }
-
-
     };
 
     private void UploadImage() {
@@ -1182,7 +1241,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return mime.getExtensionFromMimeType(cR.getType(file));
 
     }
-
 
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(
@@ -1245,48 +1303,45 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        /*
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    recreate();
-                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-
-                    // camera_main logic
-                } else {
-                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                                != PackageManager.PERMISSION_GRANTED) {
-                            showMessageOKCancel("You need to allow access permissions",
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                requestPermission();
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                }
-                break;
-        }
-        if (requestCode == RECORD_AUDIO) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "RECORD AUDIO Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "RECORD AUDIO Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == CALL_PHONE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "CALL PHONE Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "CALL PHONE Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-         */
+//        switch (requestCode) {
+//            case PERMISSION_REQUEST_CODE:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    recreate();
+//                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+//
+//                    // camera_main logic
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//                                != PackageManager.PERMISSION_GRANTED) {
+//                            showMessageOKCancel("You need to allow access permissions",
+//                                    new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                                requestPermission();
+//                                            }
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                }
+//                break;
+//        }
+//        if (requestCode == RECORD_AUDIO) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "RECORD AUDIO Permission GRANTED", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "RECORD AUDIO Permission DENIED", Toast.LENGTH_SHORT).show();
+//            }
+//        } else if (requestCode == CALL_PHONE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "CALL PHONE Permission GRANTED", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "CALL PHONE Permission DENIED", Toast.LENGTH_SHORT).show();
+//            }
+//        }
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
@@ -1383,7 +1438,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             finish();
         }
     }
-
     public void Image_Shared(View view) {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("uploads");
@@ -1411,7 +1465,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             intent.putExtra("ImageIntent", true);
             startActivity(intent);
         }
-
          */
     }
 
@@ -1426,4 +1479,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             new AppSettingsDialog.Builder(this).build().show();
         }
     }
+
+
+
 }
