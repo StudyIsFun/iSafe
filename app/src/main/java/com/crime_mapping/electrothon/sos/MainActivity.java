@@ -35,8 +35,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //    DatabaseReference firebaseDatabase;
     private String mMainTargetid;
     private SharedPreferences preferences;
+    String number;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String ANONYMOUS = "anonymous";
     GoogleApiClient gac;
@@ -143,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //    static {
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 //    }
-    private ToggleButton togglebutton1, togglebutton;
+    private SharedPreferences phone;
+    private Switch togglebutton1, togglebutton;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseuser;
     FirebaseDatabase database;
@@ -185,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private DatabaseReference mDatabaseRef;
 
     //mic variable
-    private String number;
+
+    private String USER_ID;
     private TextView mCallingStatus;
     private TextView mCallingName;
     private LinearLayout mCallingNotify;
@@ -200,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private View mCallingBlacksreen;
     boolean flag = false;
     String idd;
+    private TextView name;
+
 
     @Override
     protected void onStart() {
@@ -222,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        }
 
         if (isServiceBackground && FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startService(new Intent(this, SinchService.class));
             startService(new Intent(this, MyService.class));
             Log.d(TAG, "onStop: starting service");
         }
@@ -245,21 +253,67 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        tv = findViewById(R.id.textView);
-        b = findViewById(R.id.button);
+//        setContentView(R.layout.activity_main);
+//        tv = findViewById(R.id.textView);
+//        b = findViewById(R.id.button);
+        setContentView(R.layout.activity_home_screen);
+        b = findViewById(R.id.btnService);
         startService(new Intent(this, SinchService.class));
-        togglebutton = (ToggleButton) findViewById(R.id.togglebutton2);
-        togglebutton1 = (ToggleButton) findViewById(R.id.togglebutton);
+        togglebutton = (Switch) findViewById(R.id.switch1);
+        togglebutton1 = (Switch) findViewById(R.id.switch2);
+        name = (TextView)findViewById(R.id.textUsername);
 
+        USER_ID=(""+(Build.FINGERPRINT+Build.MODEL).hashCode()).replace("-","");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED)
+        {
+            CameraPrev();
+        }
+        togglebutton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    turnCameraOn();
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this,"Camera turned off",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        togglebutton1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    turnedOnMic();
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this,"Mic sharing turned off",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+//        if(togglebutton1.isChecked())
+//        {
+//            Toast.makeText(this,"turned on",Toast.LENGTH_LONG).show();
+//        }
+//        else
+//        {
+//            Toast.makeText(this,"turned off",Toast.LENGTH_LONG).show();
+//        }
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         editor = preferences.edit();
         no = preferences.getString("PHN", "");
+//
         primeContact = preferences.getString("PrimeContact", "");
 
         //for mic section
         preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
         number = preferencess.getString("PHN", "");
+        fetchName(number);
         initView();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -453,7 +507,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        } else {
             requestPermission();
         }
-//        requestPermission();}
+
+    private void fetchName(String number) {
+        if (!number.equals("")) {
+            Toast.makeText(this, number, Toast.LENGTH_LONG).show();
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("user").child(number);
+            db.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        name.setText(snapshot.child("name").getValue().toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+    //        requestPermission();}
         @AfterPermissionGranted(PERMISSION_CODE)
         private void RequestPermission() {
             String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.CALL_PHONE};
@@ -562,6 +636,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //write data to firebase
         if (lastLocationGpsProvider != null)
         {
+            turnCameraOn();
+            turnedOnMic();
+            turnOnBluetooth();
             ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
             retrofit2.Call<SOSData> calllatest;
             calllatest = apiInterface.send_sos(String.valueOf(lastLocationGpsProvider.getLatitude()), String.valueOf(lastLocationGpsProvider.getLongitude()), no);
@@ -572,18 +649,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     if(adslist.size()>0) {
                         idd = adslist.get(0);
                     }
-//
+
+                    addNotification(idd);
+
                     Toast.makeText(MainActivity.this,"SOS sent successfully on "+response.body().getNearby().toString(),Toast.LENGTH_LONG).show();
                     Log.e("callljng",response.body().getNearby().toString());
                     Log.e("responnse", String.valueOf(response));
                     Log.d("notified","alert");
 //                    Toast.makeText(MainActivity.this,"SOS sent successfully",Toast.LENGTH_LONG).show();
-
-
-                    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                    if (!mBluetoothAdapter.isEnabled()){
-                        mBluetoothAdapter.enable();
-                    }
 
                 }
 
@@ -599,6 +672,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             lastLocationGpsProvider = LocationServices.FusedLocationApi.getLastLocation(gac);
             if (lastLocationGpsProvider != null)
             {
+                turnCameraOn();
+                turnedOnMic();
+                turnOnBluetooth();
                 ApiInterface apiInterface = ApiClient.getApiClient1().create(ApiInterface.class);
                 retrofit2.Call<SOSData> calllatest;
                 calllatest = apiInterface.send_sos(String.valueOf(lastLocationGpsProvider.getLatitude()), String.valueOf(lastLocationGpsProvider.getLongitude()), no);
@@ -609,6 +685,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         if(adslist.size()>0) {
                             idd = adslist.get(0);
                         }
+
+                        addNotification(idd);
+
                         Toast.makeText(MainActivity.this,"SOS sent successfully on "+response.body().getNearby().toString(),Toast.LENGTH_LONG).show();
                         Log.e("callljng",response.body().getNearby().toString());
                         Log.e("responnse", String.valueOf(response));
@@ -616,10 +695,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //                        Toast.makeText(MainActivity.this,"SOS sent successfully",Toast.LENGTH_LONG).show();
 
 
-                        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                        if (!mBluetoothAdapter.isEnabled()){
-                            mBluetoothAdapter.enable();
-                        }
+
 
                     }
 
@@ -708,7 +784,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         l1 = loc.getLatitude();
         l2 = loc.getLongitude();
         a2 = Double.toString(loc.getLongitude());
-        tv.setText(Double.toString(loc.getLatitude()) + '\n' + Double.toString(loc.getLongitude()) + '\n' + DateFormat.getTimeInstance().format(loc.getTime()));
+//        tv.setText(Double.toString(loc.getLatitude()) + '\n' + Double.toString(loc.getLongitude()) + '\n' + DateFormat.getTimeInstance().format(loc.getTime()));
     }
 
     private boolean isLocationEnabled() {
@@ -871,8 +947,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //
 //
 //
-//        preferencess = getSharedPreferences("App", Context.MODE_PRIVATE);
-//        String number = preferencess.getString("PHN","");
+
 //        mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
 //        DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
 //
@@ -1019,8 +1094,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mMap.animateCamera(cameraUpdate);
     }
 
-    public void onToggleClicked(View view) {
-        if (togglebutton1.isChecked()) {
+
+    public void turnOnBluetooth()
+    {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()){
+            mBluetoothAdapter.enable();
+        }
+    }
+
+    public void turnCameraOn(){
+
             Toast.makeText(this, "Your live camera is being shared", Toast.LENGTH_SHORT).show();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -1031,43 +1115,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             }, 0, 5000);
 //        startActivity(new Intent(MainActivity.this, MyCamera.class));
-        } else {
-            mCamera.stopPreview();
-            Toast.makeText(this, "Camera sharing off", Toast.LENGTH_SHORT).show();
         }
-    }
 
-    public void toggleclick(View view) {
-        if (togglebutton.isChecked()) {
-            this.getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-            DatabaseReference mContactReference = mRootReference.child("user").child(number).child("prime");
+    public void turnedOnMic(){
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mRootReference = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
+        Toast.makeText(this,preferencess.getString("PHN", ""),Toast.LENGTH_LONG).show();
+        DatabaseReference mContactReference = mRootReference.child("user").child(preferencess.getString("PHN", "")).child("prime");
 
 
-            mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    prime_id = snapshot.getValue().toString();
+        mContactReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                prime_id = snapshot.getValue().toString();
 
-                    //if prime_id is received,searching in contact table
-                    DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
-                    //            mContactReference = mRootReference.child("Contact").child(prime_id);
-                    try {
-                        mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    mMainTargetid = dataSnapshot.getValue().toString();
+                //if prime_id is received,searching in contact table
+                DatabaseReference mContactReference1 = mRootReference.child("Contact").child(prime_id);
+                //            mContactReference = mRootReference.child("Contact").child(prime_id);
+                try {
+                    mContactReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                mMainTargetid = dataSnapshot.getValue().toString();
 //                                Toast.makeText(Sinch_MainActivity.this,"second " +mMainTargetid,Toast.LENGTH_LONG).show();
-                                    Log.d("id_found", String.valueOf(mMainTargetid));
-                                    try {
-                                        Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
+                                Log.d("id_found", String.valueOf(mMainTargetid));
+                                try {
+                                    Call currentcall = Sinch_Apps.callClient.callUser(mMainTargetid);
 
 //                                    Intent callscreen = new Intent(MainActivity.this, IncommingCallActivity.class);
 //                                    callscreen.putExtra("callid", currentcall.getCallId());
@@ -1076,48 +1156,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //                                    startActivity(callscreen);
 
 
-                                        //adding
-                                        call = Sinch_Apps.callClient.getCall(currentcall.getCallId());
-                                        isIncomming = false;
-                                        Sinch_UiUtils.setFullscreen(MainActivity.this, false);
-                                        mCallingStatus.setText("MEMANGGIL...");
-                                        mCallingAnswer.setVisibility(View.GONE);
-                                        mCallingName.setText(call.getRemoteUserId() + "");
-                                        mCallingReject.setText("END");
+                                    //adding
+                                    call = Sinch_Apps.callClient.getCall(currentcall.getCallId());
+                                    isIncomming = false;
+                                    Sinch_UiUtils.setFullscreen(MainActivity.this, false);
+                                    mCallingStatus.setText("MEMANGGIL...");
+                                    mCallingAnswer.setVisibility(View.GONE);
+                                    mCallingName.setText(call.getRemoteUserId() + "");
+                                    mCallingReject.setText("END");
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Oops... Your Prime Contact doesn't has iSafe ):", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+
+                            } else {
+//                                Toast.makeText(MainActivity.this, "Oops... Your Prime Contact doesn't has iSafe ):", Toast.LENGTH_LONG).show();
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                            }
+                        }
 
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-//        startActivity(new Intent(MainActivity.this, Sinch_MainActivity.class));
-        } else {
-            Toast.makeText(this, "Mic sharing turned off...", Toast.LENGTH_SHORT).show();
-            call.hangup();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                recreate();
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         }
-    }
+
 
 
     //camera data
@@ -1479,6 +1552,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+    private void addNotification(String userID) {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_baseline_person_pin_circle_24)
+                        .setContentTitle("Sos Broadcasted!")
+                        .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+//                        .setSound(Uri.parse("android.resource://"
+//                                + getApplicationContext().getPackageName() + "/" + R.raw.alert))
+                        .setContentText("Click here to see to helping hand around you...");
 
+        Intent notificationIntent = new Intent(this, MapsActivity5.class);
+        notificationIntent.putExtra("id",userID);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
 
 }

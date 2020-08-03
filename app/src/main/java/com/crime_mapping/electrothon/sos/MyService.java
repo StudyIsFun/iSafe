@@ -46,7 +46,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     double lat, lon;
-
+    private String no;
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     DatabaseReference locationRef = mRootRef.child("location").child(uId);
@@ -224,13 +224,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             if (preferences.getBoolean("AllowLocSharing", false)) {
                 preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
                 editor = preferences.edit();
-                final String no = preferences.getString("PHN", "");
+                no = preferences.getString("PHN", "");
 
-                databaseReference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(preferences.getString("PrimeContact", "")).child(no);
+                databaseReference = FirebaseDatabase.getInstance().getReference().child("Location_Shared").child(preferences.getString("PrimeContact", "")).child(preferences.getString("PHN", ""));
                 Map<String, Object> details = new HashMap<>();
                 details.put("Latitude", lat);
                 details.put("Longitude", lon);
-                details.put("Name", "Pal");
+                details.put("Name",preferences.getString("user_name", "") );
                 databaseReference.setValue(details);
 
 

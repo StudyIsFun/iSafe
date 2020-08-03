@@ -3,6 +3,7 @@ package com.crime_mapping.electrothon.sos;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -79,6 +81,8 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     LatLng latLngEnd;
     private final static int MY_PERMISSIONS_REQUEST = 32;
     double lat1, lon1, lat2, lon2;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +222,13 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void onBackPressed() {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        super.onBackPressed();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         switch (requestCode) {
@@ -258,6 +269,19 @@ public class MapsActivity3 extends FragmentActivity implements OnMapReadyCallbac
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             return;
+        }
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.map_style));
+
+            if (!success) {
+                Log.e("MapsActivityRaw", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("MapsActivityRaw", "Can't find style.", e);
         }
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {

@@ -24,8 +24,12 @@ public class Sinch_Apps extends Application {
         USER_ID=(""+(Build.FINGERPRINT+Build.MODEL).hashCode()).replace("-","");
         preferences = getSharedPreferences("App", Context.MODE_PRIVATE);
         final String no = preferences.getString("PHN","");
-        firebaseDatabase = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
-        firebaseDatabase.child("Contact").child(no).setValue(USER_ID);
+        if(no.length()==10)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance("https://crime1.firebaseio.com/").getReference();
+            firebaseDatabase.child("Contact").child(no).setValue(USER_ID);
+        }
+
 
 
 
